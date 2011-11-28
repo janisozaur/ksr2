@@ -1,0 +1,29 @@
+Year
+Month
+Day
+Time
+Temp out
+Hi temp
+Low temp
+Out hum
+Dew pt.
+Wind speed
+Wind dir
+Wind run
+Hi speed
+Wind chill
+Head idx
+THW idx
+Bar
+Rain
+Rain rate
+Heat D-D
+Cool D-D
+In temp
+In hum
+In dew
+In heat
+Win samp
+Wind tx
+ISS recept
+Arc int.
