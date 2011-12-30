@@ -1,4 +1,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    data_aggregator
+    data_aggregator \
+    db_summarization
+

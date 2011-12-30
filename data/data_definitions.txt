@@ -11,6 +11,7 @@ Wind speed
 Wind dir
 Wind run
 Hi speed
+Wind dir
 Wind chill
 Head idx
 THW idx
