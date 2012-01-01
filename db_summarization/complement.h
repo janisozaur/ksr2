@@ -4,13 +4,14 @@
 #include "fuzzyset.h"
 #include <QVariant>
 
-class Complement : FuzzySet
+class Complement : public FuzzySet
 {
 private:
     FuzzySet *fuzzySet;
 public:
     Complement();
     double membership(QVariant) const;
+    double membership(QVector<QVariant>) const;
     FuzzySet *getFuzzySet() const;
     void setFuzzySet(FuzzySet *fuzzySet);
 };

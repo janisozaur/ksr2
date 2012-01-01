@@ -4,7 +4,7 @@
 #include "fuzzyset.h"
 #include <QVariant>
 
-class Intersection : FuzzySet
+class Intersection : public FuzzySet
 {
 private:
     FuzzySet *fuzzySet1;
@@ -12,6 +12,7 @@ private:
 public:
     Intersection();
     double membership(QVariant) const;
+    double membership(QVector<QVariant>) const;
 
     FuzzySet *getFuzzySet1() const;
     void setFuzzySet1(FuzzySet *fuzzySet);

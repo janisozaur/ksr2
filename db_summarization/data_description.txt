@@ -1,0 +1,30 @@
+N:Year
+N:Month
+N:Day
+T:Time
+N:Temp out
+N:Hi temp
+N:Low temp
+N:Out hum
+N:Dew pt.
+N:Wind speed
+T:Wind dir
+N:Wind run
+N:Hi speed
+T:Hi dir
+N:Wind chill
+N:Head idx
+N:THW idx
+N:Bar
+N:Rain
+N:Rain rate
+N:Heat D-D
+N:Cool D-D
+N:In temp
+N:In hum
+N:In dew
+N:In heat
+N:Win samp
+N:Wind tx
+N:ISS recept
+N:Arc int.

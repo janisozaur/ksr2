@@ -8,6 +8,10 @@ double Intersection::membership(QVariant element) const{
     return qMin(fuzzySet1->membership(element), fuzzySet2->membership(element));
 }
 
+double Intersection::membership(QVector<QVariant> dbRow) const{
+    return qMin(fuzzySet1->membership(dbRow), fuzzySet2->membership(dbRow));
+}
+
 FuzzySet *Intersection::getFuzzySet1() const{
     return fuzzySet1;
 }

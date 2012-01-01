@@ -25,7 +25,9 @@ SOURCES += main.cpp \
     union.cpp \
     intersection.cpp \
     complement.cpp \
-    support.cpp
+    support.cpp \
+    quantifier.cpp \
+    qualitymeasures.cpp
 
 HEADERS += \
     membershipfuncineterface.h \
@@ -38,7 +40,13 @@ HEADERS += \
     union.h \
     intersection.h \
     complement.h \
-    support.h
+    support.h \
+    quantifier.h \
+    qualitymeasures.h
+
+
+
+
 
 
 

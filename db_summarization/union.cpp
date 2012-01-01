@@ -8,6 +8,10 @@ double Union::membership(QVariant element) const{
     return qMax(fuzzySet1->membership(element), fuzzySet2->membership(element));
 }
 
+double Union::membership(QVector<QVariant> dbRow) const{
+    return qMax(fuzzySet1->membership(dbRow), fuzzySet2->membership(dbRow));
+}
+
 FuzzySet *Union::getFuzzySet1() const{
     return fuzzySet1;
 }

@@ -10,11 +10,16 @@ class BasicFuzzySet : public FuzzySet
 {
 private:
     MembershipFuncInterface *membershipFunction;
+    int colNum;
 public:
     BasicFuzzySet();
-    double membership(QVariant);
+    double membership(QVariant) const;
+    double membership(QVector<QVariant>) const;
     MembershipFuncInterface *getMembershipFunction() const;
     void setMembershipFunction(MembershipFuncInterface *membershipFunction);
+
+    double getColNum() const;
+    void setColNum(const int colNum);
 };
 
 #endif // BASICFUZZYSET_H

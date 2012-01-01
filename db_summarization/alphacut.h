@@ -4,13 +4,14 @@
 #include "fuzzyset.h"
 #include <QVariant>
 
-class AlphaCut : FuzzySet
+class AlphaCut : public FuzzySet
 {
 private:
     FuzzySet *fuzzySet;
 public:
     AlphaCut();
     double membership(QVariant) const;
+    double membership(QVector<QVariant>) const;
     FuzzySet *getFuzzySet() const;
     void setFuzzySet(FuzzySet *fuzzySet);
 };
