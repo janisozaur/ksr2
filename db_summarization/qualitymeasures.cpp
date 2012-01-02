@@ -123,7 +123,7 @@ double QualityMeasures::computeT4(const QList<const BasicFuzzySet *> &qualifiers
         result*=support.cardinality(dbRows)/dbRows.size();
     }
     result = result/summarizers.size();
-    return result - QualityMeasures::computeT3(qualifiers, summarizers, dbRows);
+	return fabs(result - QualityMeasures::computeT3(qualifiers, summarizers, dbRows));
 }
 
 double QualityMeasures::computeT5T11(const int &summarizersNum){
