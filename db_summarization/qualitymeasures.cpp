@@ -9,25 +9,21 @@
 
 double  QualityMeasures::computeT1(Quantifier quantifier, QList<BasicFuzzySet> qualifiers, QList<BasicFuzzySet> summarizers, QList<QVector<QVariant> > dbRows){
     //int dbSize = summarizers.at(0).getElements().size();
-    BasicFuzzySet basicFuzzySet = summarizers.value(0);
-    FuzzySet *summarizerIntersection = &basicFuzzySet;
+    FuzzySet *summarizerIntersection = &summarizers[0];
     FuzzySet *qualifierIntersection;
     Intersection *temp;
     for(int i = 1; i<summarizers.size(); i++){
         temp = new Intersection();
         temp->setFuzzySet1(summarizerIntersection);
-        basicFuzzySet = summarizers.value(i);
-        temp->setFuzzySet2(&basicFuzzySet);
+        temp->setFuzzySet2(&summarizers[i]);
         summarizerIntersection = temp;
     }
     if(!qualifiers.empty()){
-        basicFuzzySet = qualifiers.value(0);
-        qualifierIntersection = &basicFuzzySet;
+        qualifierIntersection = &qualifiers[0];
         for(int i = 1; i<qualifiers.size(); i++){
             temp = new Intersection();
             temp->setFuzzySet1(qualifierIntersection);
-            basicFuzzySet = qualifiers.value(i);
-            temp->setFuzzySet2(&basicFuzzySet);
+            temp->setFuzzySet2(&qualifiers[i]);
             summarizerIntersection = temp;
         }
     }
@@ -67,12 +63,10 @@ double  QualityMeasures::computeT2T9(QList<BasicFuzzySet> fuzzySets, QList<QVect
         return 1;
     }
 
-    BasicFuzzySet basicFuzzySet;
     double result = 1;
     for(int i =0; i<fuzzySets.size(); i++){
         Support support = Support();
-        basicFuzzySet = fuzzySets.value(i);
-        support.setFuzzySet(&basicFuzzySet);
+        support.setFuzzySet(&fuzzySets[i]);
         result*=support.cardinality(dbRows)/dbRows.size();
     }
     result = pow(result, 1.0/fuzzySets.size());
@@ -81,25 +75,21 @@ double  QualityMeasures::computeT2T9(QList<BasicFuzzySet> fuzzySets, QList<QVect
 
 double  QualityMeasures::computeT3(QList<BasicFuzzySet> qualifiers, QList<BasicFuzzySet> summarizers, QList<QVector<QVariant> > dbRows){
 
-    BasicFuzzySet basicFuzzySet = summarizers.value(0);
-    FuzzySet *summarizerIntersection = &basicFuzzySet;
+    FuzzySet *summarizerIntersection = &summarizers[0];
     FuzzySet *qualifierIntersection;
     Intersection *temp;
     for(int i = 1; i<summarizers.size(); i++){
         temp = new Intersection();
         temp->setFuzzySet1(summarizerIntersection);
-        basicFuzzySet = summarizers.value(i);
-        temp->setFuzzySet2(&basicFuzzySet);
+        temp->setFuzzySet2(&summarizers[i]);
         summarizerIntersection = temp;
     }
     if(!qualifiers.empty()){
-        basicFuzzySet = qualifiers.value(0);
-        qualifierIntersection = &basicFuzzySet;
+        qualifierIntersection = &qualifiers[0];
         for(int i = 1; i<qualifiers.size(); i++){
             temp = new Intersection();
             temp->setFuzzySet1(qualifierIntersection);
-            basicFuzzySet = qualifiers.value(i);
-            temp->setFuzzySet2(&basicFuzzySet);
+            temp->setFuzzySet2(&qualifiers[i]);
             summarizerIntersection = temp;
         }
     }
@@ -128,12 +118,10 @@ double  QualityMeasures::computeT4(QList<BasicFuzzySet> qualifiers, QList<BasicF
         return 1;
     }
 
-    BasicFuzzySet basicFuzzySet;
     double result = 1;
     for(int i =0; i<summarizers.size(); i++){
         Support support = Support();
-        basicFuzzySet = summarizers.value(i);
-        support.setFuzzySet(&basicFuzzySet);
+        support.setFuzzySet(&summarizers[i]);
         result*=support.cardinality(dbRows)/dbRows.size();
     }
     result = result/summarizers.size();
@@ -193,12 +181,10 @@ double  QualityMeasures::computeT8T10(QList<BasicFuzzySet> fuzzySets, QList<QVec
         return 1;
     }
 
-    BasicFuzzySet basicFuzzySet;
     double result = 1;
     for(int i =0; i<fuzzySets.size(); i++){
         Support support = Support();
-        basicFuzzySet = fuzzySets.value(i);
-        support.setFuzzySet(&basicFuzzySet);
+        support.setFuzzySet(&fuzzySets[i]);
         result*=support.cardinality(dbRows)/dbRows.size();
     }
     result = pow(result, 1.0/fuzzySets.size());
