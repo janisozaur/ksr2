@@ -1,8 +1,40 @@
 #include "trianglefunction.h"
-#include <QVariant>
+
+#include <QDebug>
 
 TriangleFunction::TriangleFunction()
 {
+}
+
+bool TriangleFunction::init(const QVariant &params)
+{
+	const QList<QVariant> paramList = params.toList();
+	if (paramList.size() != 3) {
+		return false;
+	}
+	bool ok;
+	int i = 0;
+	a = paramList.at(i).toDouble(&ok);
+	if (!ok) {
+		qCritical() << "failed to parse" << i << ":"
+					<< paramList.at(i).toString() << "as double";
+		return false;
+	}
+	i = 1;
+	b = paramList.at(i).toDouble(&ok);
+	if (!ok) {
+		qCritical() << "failed to parse" << i << ":"
+					<< paramList.at(i).toString() << "as double";
+		return false;
+	}
+	i = 2;
+	c = paramList.at(i).toDouble(&ok);
+	if (!ok) {
+		qCritical() << "failed to parse" << i << ":"
+					<< paramList.at(i).toString() << "as double";
+		return false;
+	}
+	return true;
 }
 
 double TriangleFunction::value(const QVariant arg) const{

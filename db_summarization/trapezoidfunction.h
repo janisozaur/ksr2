@@ -15,6 +15,7 @@ private:
 public:
     TrapezoidFunction();
     double value(const QVariant) const;
+	bool init(const QVariant &params);
 
     double getA() const;
     double getB() const;

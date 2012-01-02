@@ -12,9 +12,10 @@ private:
 public:
     DiscreteFunction();
     double value(const QVariant) const;
+	bool init(const QVariant &params);
 
     QMap<QString, double> getArgumentToValueMap() const;
-    void setArgumentToValueMap(QMap<QString, double> const);
+	void setArgumentToValueMap(QMap<QString, double> const valueMap);
 };
 
 #endif // DISCRETEFUNCTION_H

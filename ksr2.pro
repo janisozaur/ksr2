@@ -2,5 +2,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     data_aggregator \
-    db_summarization
-
+	db_summarization \
+	qjson
