@@ -1,3 +1,6 @@
 [submodule "data_aggregator/gnuplot-iostream"]
 	path = data_aggregator/gnuplot-iostream
 	url = git://gitorious.org/gnuplot-iostream/gnuplot-iostream.git
+[submodule "qjson"]
+	path = qjson
+	url = git://gitorious.org/qjson/qjson.git
