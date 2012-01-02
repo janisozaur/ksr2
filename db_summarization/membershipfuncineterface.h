@@ -6,7 +6,7 @@
 class MembershipFuncInterface
 {
 public:
-    virtual double value(const QVariant) const =0;
+	virtual double value(const QVariant &) const =0;
 	virtual bool init(const QVariant &params) = 0;
 };
 

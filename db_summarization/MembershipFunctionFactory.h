@@ -8,7 +8,7 @@
 class MembershipFuncFactory
 {
 public:
-	static MembershipFuncInterface *getFunction(const QVariantMap &map);
+	static MembershipFuncInterface const *getFunction(const QVariantMap &map);
 };
 
 #endif // MEMBERSHIPFUNCTIONFACTORY_H

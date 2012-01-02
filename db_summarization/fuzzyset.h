@@ -8,10 +8,10 @@
 class FuzzySet
 {
 public:
-    virtual double membership(QVariant) const = 0;
-    virtual double membership(QVector<QVariant>) const = 0;
+	virtual double membership(const QVariant &element) const = 0;
+	virtual double membership(const QVector<QVariant> &elements) const = 0;
 
-    double cardinality(QList<QVariant>);
-    double cardinality(QList<QVector<QVariant> >);
+	double cardinality(const QList<QVariant> &element) const;
+	double cardinality(const QList<QVector<QVariant> > &elements) const;
 };
 #endif // FUZZYSET_H

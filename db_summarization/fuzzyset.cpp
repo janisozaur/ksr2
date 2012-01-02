@@ -1,20 +1,18 @@
 #include "fuzzyset.h"
 #include <QVariant>
 
-double FuzzySet::cardinality(QList<QVariant> elements){
-    double sum = 0;
-    QVariant element;
-    foreach(element, elements){
-        sum += membership(element);
+double FuzzySet::cardinality(const QList<QVariant> &element) const {
+	double sum = 0;
+	for (int i = 0; i < element.size(); i++) {
+		sum += membership(element.at(i));
     }
     return sum;
 }
 
-double FuzzySet::cardinality(QList<QVector<QVariant> > dbRows){
-    double sum = 0;
-    QVector<QVariant> dbRow;
-    foreach(dbRow, dbRows){
-        sum += membership(dbRow);
+double FuzzySet::cardinality(const QList<QVector<QVariant> > &elements) const {
+	double sum = 0;
+	for (int i = 0; i < elements.size(); i++) {
+		sum += membership(elements.at(i));
     }
     return sum;
 }

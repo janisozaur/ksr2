@@ -5,24 +5,24 @@ BasicFuzzySet::BasicFuzzySet()
 {
 }
 
-double BasicFuzzySet::membership(QVariant element) const{
+double BasicFuzzySet::membership(const QVariant &element) const {
     return membershipFunction->value(element);
 }
 
-double BasicFuzzySet::membership(QVector<QVariant> dbRow) const{
-    return membershipFunction->value(dbRow.at(colNum));
+double BasicFuzzySet::membership(const QVector<QVariant> &elements) const {
+	return membershipFunction->value(elements.at(colNum));
 }
 
-MembershipFuncInterface *BasicFuzzySet::getMembershipFunction() const{
+const MembershipFuncInterface *BasicFuzzySet::getMembershipFunction() const {
     return membershipFunction;
 }
-void BasicFuzzySet::setMembershipFunction(MembershipFuncInterface *membershipFunction){
+void BasicFuzzySet::setMembershipFunction(const MembershipFuncInterface *membershipFunction) {
     this->membershipFunction = membershipFunction;
 }
 
-double BasicFuzzySet::getColNum() const{
+double BasicFuzzySet::getColNum() const {
     return colNum;
 }
-void BasicFuzzySet::setColNum(const int colNum){
+void BasicFuzzySet::setColNum(const int colNum) {
     this->colNum = colNum;
 }

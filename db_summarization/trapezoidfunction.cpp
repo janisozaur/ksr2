@@ -44,7 +44,7 @@ bool TrapezoidFunction::init(const QVariant &params)
 	return true;
 }
 
-double TrapezoidFunction::value(const QVariant arg) const{
+double TrapezoidFunction::value(const QVariant &arg) const{
     double x = arg.toDouble();
 
     if (x >= b && x <= c) {

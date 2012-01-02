@@ -37,7 +37,7 @@ bool TriangleFunction::init(const QVariant &params)
 	return true;
 }
 
-double TriangleFunction::value(const QVariant arg) const{
+double TriangleFunction::value(const QVariant &arg) const{
     double x = arg.toDouble();
 
     if (x == b) {

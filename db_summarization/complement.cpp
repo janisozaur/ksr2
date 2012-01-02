@@ -4,17 +4,18 @@ Complement::Complement()
 {
 }
 
-double Complement::membership(QVariant element) const{
+double Complement::membership(const QVariant &element) const {
     return 1 - fuzzySet->membership(element);
 }
 
-double Complement::membership(QVector<QVariant> dbRow) const{
+double Complement::membership(const QVector<QVariant> &dbRow) const {
     return 1 - fuzzySet->membership(dbRow);
 }
 
-FuzzySet *Complement::getFuzzySet() const{
+const FuzzySet *Complement::getFuzzySet() const {
     return fuzzySet;
 }
-void Complement::setFuzzySet(FuzzySet *fuzzySet){
+
+void Complement::setFuzzySet(const FuzzySet *fuzzySet) {
     this->fuzzySet = fuzzySet;
 }

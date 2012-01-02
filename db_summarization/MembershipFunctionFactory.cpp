@@ -5,7 +5,7 @@
 
 #include <QDebug>
 
-MembershipFuncInterface *MembershipFuncFactory::getFunction(const QVariantMap &map)
+const MembershipFuncInterface *MembershipFuncFactory::getFunction(const QVariantMap &map)
 {
 	MembershipFuncInterface *result = nullptr;
 	const QString type = map["type"].toString().toLower();

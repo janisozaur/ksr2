@@ -46,16 +46,20 @@ int main(int argc, char *argv[])
     }
 
 
-    QList<QVector<QVariant> > dbRows = QList<QVector<QVariant> >();
-    for (int i=0; i<data.size(); i++){
-        if(data.at(i).size() == data.at(0).size()){
-            QVector<QVariant> dbRow = QVector<QVariant>(data.at(0).size());
-            for (int j=0; j<data.at(0).size(); j++){
-                if(dataDesc[j]=="N"){
-                    dbRow[j]=QVariant(data.at(i).at(j).toDouble());
+	QList<QVector<QVariant> > dbRows;
+	for (int i=0; i<data.size(); i++) {
+		const int size = data.at(0).size();
+		if (data.at(i).size() == size) {
+			QVector<QVariant> dbRow;
+			dbRow.reserve(size);
+			for (int j = 0; j < size; j++) {
+				QVariant v;
+				if (dataDesc.at(j) == "N") {
+					v = QVariant(data.at(i).at(j).toDouble());
                 }else{
-                    dbRow[j]=QVariant(data.at(i).at(j));
+					v = QVariant(data.at(i).at(j));
                 }
+				dbRow.append(v);
             }
             dbRows.append(dbRow);
         }
@@ -66,8 +70,8 @@ int main(int argc, char *argv[])
     TrapezoidFunction moreMembership = TrapezoidFunction();
     moreMembership.setA(0.5);
     moreMembership.setB(0.7);
-    moreMembership.setB(1);
-    moreMembership.setB(1);
+	moreMembership.setB(1);
+	moreMembership.setB(1);
     Quantifier moreQuantifier = Quantifier();
     moreQuantifier.setMembershipFunction(&moreMembership);
     moreQuantifier.setRelative(true);
@@ -81,9 +85,9 @@ int main(int argc, char *argv[])
     lowRainSet.setColNum(19);
     lowRainSet.setMembershipFunction(&lowRainFunction);
 
-    QList<BasicFuzzySet> summarizers = QList<BasicFuzzySet>();
-    summarizers.append(lowRainSet);
+	QList<const BasicFuzzySet *> summarizers;
+	summarizers.append(&lowRainSet);
 
-    qDebug()<<"T1: "<<QualityMeasures::computeT1(moreQuantifier, QList<BasicFuzzySet>(), summarizers, dbRows);
+	qDebug()<<"T1: "<<QualityMeasures::computeT1(moreQuantifier, QList<const BasicFuzzySet *>(), summarizers, dbRows);
     return 0;
 }
