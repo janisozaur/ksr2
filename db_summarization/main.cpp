@@ -88,6 +88,18 @@ int main(int argc, char *argv[])
 	QList<const BasicFuzzySet *> summarizers;
 	summarizers.append(&lowRainSet);
 
-	qDebug()<<"T1: "<<QualityMeasures::computeT1(moreQuantifier, QList<const BasicFuzzySet *>(), summarizers, dbRows);
+    QList<const BasicFuzzySet *> qualifiers = QList< const BasicFuzzySet*>();
+
+    qDebug()<<"T1: "<<QualityMeasures::computeT1(moreQuantifier, qualifiers, summarizers, dbRows);
+    qDebug()<<"T2: "<<QualityMeasures::computeT2T9(summarizers, dbRows);
+    qDebug()<<"T3: "<<QualityMeasures::computeT3(qualifiers, summarizers, dbRows);
+    qDebug()<<"T4: "<<QualityMeasures::computeT4(qualifiers, summarizers, dbRows);
+    qDebug()<<"T5: "<<QualityMeasures::computeT5T11(summarizers.size());
+    qDebug()<<"T6: "<<QualityMeasures::computeT6(moreQuantifier, dbRows.size());
+    qDebug()<<"T7: "<<QualityMeasures::computeT7(moreQuantifier, dbRows.size());
+    qDebug()<<"T8: "<<QualityMeasures::computeT8T10(summarizers, dbRows);
+    qDebug()<<"T9: "<<QualityMeasures::computeT2T9(qualifiers, dbRows);
+    qDebug()<<"T10: "<<QualityMeasures::computeT8T10(qualifiers, dbRows);
+    qDebug()<<"T11: "<<QualityMeasures::computeT5T11(qualifiers.size());
     return 0;
 }
