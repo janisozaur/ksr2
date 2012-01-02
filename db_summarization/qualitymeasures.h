@@ -11,12 +11,12 @@ class QualityMeasures
 {
 public:
 	static double computeT1(const Quantifier &quantifier, const QList<const BasicFuzzySet *> &qualifiers, const QList<const BasicFuzzySet *> &summarizers, const QList<QVector<QVariant> > &dbRows);
-    static double computeT2T9(QList<BasicFuzzySet> fuzzySets, QList<QVector<QVariant> > dbRows);
-    static double computeT3(QList<BasicFuzzySet> quantifiers, QList<BasicFuzzySet> summarizers, QList<QVector<QVariant> > dbRows);
-    static double computeT4(QList<BasicFuzzySet> quantifiers, QList<BasicFuzzySet> summarizers, QList<QVector<QVariant> > dbRows);
-    static double computeT5T11(int summarizersNum);
-    static double computeT6(Quantifier quantifier, QList<QVector<QVariant> > dbRows);
-    static double computeT7(Quantifier quantifier, int dbRowsSize);
+	static double computeT2T9(const QList<const BasicFuzzySet *> &fuzzySets, const QList<QVector<QVariant> > &dbRows);
+	static double computeT3(const QList<const BasicFuzzySet *> &quantifiers, const QList<const BasicFuzzySet *> &summarizers, const QList<QVector<QVariant> > &dbRows);
+	static double computeT4(const QList<const BasicFuzzySet *> &quantifiers, const QList<const BasicFuzzySet *> &summarizers, const QList<QVector<QVariant> > &dbRows);
+	static double computeT5T11(const int &summarizersNum);
+	static double computeT6(const Quantifier &quantifier, const QList<QVector<QVariant> > &dbRows);
+	static double computeT7(const Quantifier &quantifier, const int &dbRowsSize);
 };
 
 #endif // QUALITYMEASURES_H
