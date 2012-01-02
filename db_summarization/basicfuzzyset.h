@@ -9,14 +9,14 @@
 class BasicFuzzySet : public FuzzySet
 {
 private:
-    MembershipFuncInterface *membershipFunction;
+	const MembershipFuncInterface *membershipFunction;
     int colNum;
 public:
     BasicFuzzySet();
-    double membership(QVariant) const;
-    double membership(QVector<QVariant>) const;
-    MembershipFuncInterface *getMembershipFunction() const;
-    void setMembershipFunction(MembershipFuncInterface *membershipFunction);
+	double membership(const QVariant &element) const;
+	double membership(const QVector<QVariant> &elements) const;
+	const MembershipFuncInterface *getMembershipFunction() const;
+	void setMembershipFunction(const MembershipFuncInterface *membershipFunction);
 
     double getColNum() const;
     void setColNum(const int colNum);

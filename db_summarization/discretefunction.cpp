@@ -32,7 +32,7 @@ bool DiscreteFunction::init(const QVariant &params)
 	return true;
 }
 
-double DiscreteFunction::value(const QVariant arg) const{
+double DiscreteFunction::value(const QVariant &arg) const {
     return argumentToValueMap.value(arg.toString());
 }
 
@@ -40,6 +40,6 @@ QMap<QString, double> DiscreteFunction::getArgumentToValueMap() const{
     return argumentToValueMap;
 }
 
-void DiscreteFunction::setArgumentToValueMap(const QMap<QString, double> valueMap){
+void DiscreteFunction::setArgumentToValueMap(const QMap<QString, double> &valueMap) {
 	this->argumentToValueMap = valueMap;
 }

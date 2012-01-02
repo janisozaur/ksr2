@@ -7,13 +7,14 @@
 class Support : public FuzzySet
 {
 private:
-    FuzzySet *fuzzySet;
+	const FuzzySet *fuzzySet;
+
 public:
     Support();
-    double membership(QVariant) const;
-    double membership(QVector<QVariant>) const;
-    FuzzySet *getFuzzySet() const;
-    void setFuzzySet(FuzzySet *fuzzySet);
+	double membership(const QVariant &element) const;
+	double membership(const QVector<QVariant> &elements) const;
+	const FuzzySet *getFuzzySet() const;
+	void setFuzzySet(const FuzzySet *fuzzySet);
 };
 
 #endif // SUPPORT_H

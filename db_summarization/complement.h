@@ -7,13 +7,13 @@
 class Complement : public FuzzySet
 {
 private:
-    FuzzySet *fuzzySet;
+	const FuzzySet *fuzzySet;
 public:
     Complement();
-    double membership(QVariant) const;
-    double membership(QVector<QVariant>) const;
-    FuzzySet *getFuzzySet() const;
-    void setFuzzySet(FuzzySet *fuzzySet);
+	double membership(const QVariant &) const;
+	double membership(const QVector<QVariant> &) const;
+	const FuzzySet *getFuzzySet() const;
+	void setFuzzySet(const FuzzySet *fuzzySet);
 };
 
 #endif // COMPLEMENT_H

@@ -7,18 +7,18 @@
 class Intersection : public FuzzySet
 {
 private:
-    FuzzySet *fuzzySet1;
-    FuzzySet *fuzzySet2;
+	const FuzzySet *fuzzySet1;
+	const FuzzySet *fuzzySet2;
 public:
     Intersection();
-    double membership(QVariant) const;
-    double membership(QVector<QVariant>) const;
+	double membership(const QVariant &element) const;
+	double membership(const QVector<QVariant> &elements) const;
 
-    FuzzySet *getFuzzySet1() const;
-    void setFuzzySet1(FuzzySet *fuzzySet);
+	const FuzzySet *getFuzzySet1() const;
+	void setFuzzySet1(const FuzzySet *const fuzzySet);
 
-    FuzzySet *getFuzzySet2() const;
-    void setFuzzySet2(FuzzySet *fuzzySet);
+	const FuzzySet *getFuzzySet2() const;
+	void setFuzzySet2(const FuzzySet *fuzzySet);
 };
 
 #endif // INTERSECTION_H

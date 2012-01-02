@@ -7,23 +7,23 @@
 #include <cmath>
 
 
-double  QualityMeasures::computeT1(Quantifier quantifier, QList<BasicFuzzySet> qualifiers, QList<BasicFuzzySet> summarizers, QList<QVector<QVariant> > dbRows){
+double  QualityMeasures::computeT1(const Quantifier &quantifier, const QList<const BasicFuzzySet *> &qualifiers, const QList<const BasicFuzzySet *> &summarizers, const QList<QVector<QVariant> > &dbRows) {
     //int dbSize = summarizers.at(0).getElements().size();
-    FuzzySet *summarizerIntersection = &summarizers[0];
-    FuzzySet *qualifierIntersection;
+    const FuzzySet *summarizerIntersection = summarizers[0];
+    const FuzzySet *qualifierIntersection;
     Intersection *temp;
     for(int i = 1; i<summarizers.size(); i++){
         temp = new Intersection();
         temp->setFuzzySet1(summarizerIntersection);
-        temp->setFuzzySet2(&summarizers[i]);
+        temp->setFuzzySet2(summarizers[i]);
         summarizerIntersection = temp;
     }
     if(!qualifiers.empty()){
-        qualifierIntersection = &qualifiers[0];
+        qualifierIntersection = qualifiers[0];
         for(int i = 1; i<qualifiers.size(); i++){
             temp = new Intersection();
             temp->setFuzzySet1(qualifierIntersection);
-            temp->setFuzzySet2(&qualifiers[i]);
+            temp->setFuzzySet2(qualifiers[i]);
             summarizerIntersection = temp;
         }
     }
@@ -39,16 +39,16 @@ double  QualityMeasures::computeT1(Quantifier quantifier, QList<BasicFuzzySet> q
         }
         return quantifier.membership(sum/m);
     }else{
-        Intersection *intersection = new Intersection();
-        intersection->setFuzzySet1(summarizerIntersection);
-        intersection->setFuzzySet2(qualifierIntersection);
+		Intersection *intersection = new Intersection();
+		intersection->setFuzzySet1(summarizerIntersection);
+		intersection->setFuzzySet2(qualifierIntersection);
 
         double sum1=0;
         double sum2=0;
 
         for(int i=0; i<dbRows.size(); i++){
-            sum1 += intersection->membership(dbRows.at(i));
-            sum2 += qualifierIntersection->membership(dbRows.at(i));
+			sum1 += intersection->membership(dbRows.at(i));
+			sum2 += qualifierIntersection->membership(dbRows.at(i));
         }
         if(sum2 == 0){
             return quantifier.membership(0);
@@ -58,7 +58,7 @@ double  QualityMeasures::computeT1(Quantifier quantifier, QList<BasicFuzzySet> q
     }
 }
 
-double  QualityMeasures::computeT2T9(QList<BasicFuzzySet> fuzzySets, QList<QVector<QVariant> > dbRows){
+double  QualityMeasures::computeT2T9(QList<const BasicFuzzySet *> fuzzySets, QList<QVector<QVariant> > dbRows){
     if(fuzzySets.empty()){
         return 1;
     }
@@ -66,30 +66,30 @@ double  QualityMeasures::computeT2T9(QList<BasicFuzzySet> fuzzySets, QList<QVect
     double result = 1;
     for(int i =0; i<fuzzySets.size(); i++){
         Support support = Support();
-        support.setFuzzySet(&fuzzySets[i]);
+        support.setFuzzySet(fuzzySets[i]);
         result*=support.cardinality(dbRows)/dbRows.size();
     }
     result = pow(result, 1.0/fuzzySets.size());
     return 1.0 - result;
 }
 
-double  QualityMeasures::computeT3(QList<BasicFuzzySet> qualifiers, QList<BasicFuzzySet> summarizers, QList<QVector<QVariant> > dbRows){
+double  QualityMeasures::computeT3(QList<const BasicFuzzySet *> qualifiers, QList<const BasicFuzzySet *> summarizers, QList<QVector<QVariant> > dbRows){
 
-    FuzzySet *summarizerIntersection = &summarizers[0];
-    FuzzySet *qualifierIntersection;
+    const FuzzySet *summarizerIntersection = summarizers[0];
+    const FuzzySet *qualifierIntersection;
     Intersection *temp;
     for(int i = 1; i<summarizers.size(); i++){
         temp = new Intersection();
         temp->setFuzzySet1(summarizerIntersection);
-        temp->setFuzzySet2(&summarizers[i]);
+        temp->setFuzzySet2(summarizers[i]);
         summarizerIntersection = temp;
     }
     if(!qualifiers.empty()){
-        qualifierIntersection = &qualifiers[0];
+        qualifierIntersection = qualifiers[0];
         for(int i = 1; i<qualifiers.size(); i++){
             temp = new Intersection();
             temp->setFuzzySet1(qualifierIntersection);
-            temp->setFuzzySet2(&qualifiers[i]);
+            temp->setFuzzySet2(qualifiers[i]);
             summarizerIntersection = temp;
         }
     }
@@ -113,7 +113,7 @@ double  QualityMeasures::computeT3(QList<BasicFuzzySet> qualifiers, QList<BasicF
 }
 
 
-double  QualityMeasures::computeT4(QList<BasicFuzzySet> qualifiers, QList<BasicFuzzySet> summarizers, QList<QVector<QVariant> > dbRows){
+double  QualityMeasures::computeT4(QList<const BasicFuzzySet *> qualifiers, QList<const BasicFuzzySet *> summarizers, QList<QVector<QVariant> > dbRows){
     if(summarizers.empty()){
         return 1;
     }
@@ -121,7 +121,7 @@ double  QualityMeasures::computeT4(QList<BasicFuzzySet> qualifiers, QList<BasicF
     double result = 1;
     for(int i =0; i<summarizers.size(); i++){
         Support support = Support();
-        support.setFuzzySet(&summarizers[i]);
+        support.setFuzzySet(summarizers[i]);
         result*=support.cardinality(dbRows)/dbRows.size();
     }
     result = result/summarizers.size();
@@ -176,7 +176,7 @@ double  QualityMeasures::computeT7(Quantifier quantifier, int dbRowsSize){
     return quantifier.cardinality(quantityList)/quantityList.size();
 }
 
-double  QualityMeasures::computeT8T10(QList<BasicFuzzySet> fuzzySets, QList<QVector<QVariant> > dbRows){
+double  QualityMeasures::computeT8T10(QList<const BasicFuzzySet *> fuzzySets, QList<QVector<QVariant> > dbRows){
     if(fuzzySets.empty()){
         return 1;
     }
@@ -184,7 +184,7 @@ double  QualityMeasures::computeT8T10(QList<BasicFuzzySet> fuzzySets, QList<QVec
     double result = 1;
     for(int i =0; i<fuzzySets.size(); i++){
         Support support = Support();
-        support.setFuzzySet(&fuzzySets[i]);
+        support.setFuzzySet(fuzzySets[i]);
         result*=support.cardinality(dbRows)/dbRows.size();
     }
     result = pow(result, 1.0/fuzzySets.size());
