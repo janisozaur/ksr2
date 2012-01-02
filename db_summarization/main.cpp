@@ -101,5 +101,18 @@ int main(int argc, char *argv[])
     qDebug()<<"T9: "<<QualityMeasures::computeT2T9(qualifiers, dbRows);
     qDebug()<<"T10: "<<QualityMeasures::computeT8T10(qualifiers, dbRows);
     qDebug()<<"T11: "<<QualityMeasures::computeT5T11(qualifiers.size());
+
+	QList<QualityMeasures::Measures> measures;
+	measures << QualityMeasures::T1	<< QualityMeasures::T2 << QualityMeasures::T3
+			 << QualityMeasures::T4 << QualityMeasures::T5 << QualityMeasures::T6
+			 << QualityMeasures::T7 << QualityMeasures::T8 << QualityMeasures::T9
+			 << QualityMeasures::T10 << QualityMeasures::T11;
+	QList<double> ts = QualityMeasures::computeT(measures, moreQuantifier,
+												 qualifiers, summarizers, dbRows);
+	for (int i = 0; i < measures.size(); i++) {
+		const QString tIdStr = QString::number(int(measures.at(i)));
+		const QString tValStr = QString::number(ts.at(i));
+		qDebug() << QString("T%1: %2").arg(tIdStr, tValStr);
+	}
     return 0;
 }

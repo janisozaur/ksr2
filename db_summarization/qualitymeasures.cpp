@@ -188,3 +188,53 @@ double  QualityMeasures::computeT8T10(QList<const BasicFuzzySet *> fuzzySets, co
     result = pow(result, 1.0/fuzzySets.size());
     return 1.0 - result;
 }
+
+QList<double> QualityMeasures::computeT(const QList<Measures> &measures,
+										const Quantifier &quantifier,
+										const QList<const BasicFuzzySet *> &qualifiers,
+										const QList<const BasicFuzzySet *> &summarizers,
+										const QList<QVector<QVariant> > &dbRows)
+{
+	QList<double> result;
+	result.reserve(measures.size());
+	for (int i = 0; i < measures.size(); i++) {
+		double t;
+		switch (measures.at(i)) {
+			case T1:
+				t = computeT1(quantifier, qualifiers, summarizers, dbRows);
+				break;
+			case T2:
+				t = computeT2T9(summarizers, dbRows);
+				break;
+			case T3:
+				t = computeT3(qualifiers, summarizers, dbRows);
+				break;
+			case T4:
+				t = computeT4(qualifiers, summarizers, dbRows);
+				break;
+			case T5:
+				t = computeT5T11(summarizers.size());
+				break;
+			case T6:
+				t = computeT6(quantifier, dbRows.size());
+				break;
+			case T7:
+				t = computeT7(quantifier, dbRows.size());
+				break;
+			case T8:
+				t = computeT8T10(summarizers, dbRows);
+				break;
+			case T9:
+				t = computeT2T9(qualifiers, dbRows);
+				break;
+			case T10:
+				t = computeT8T10(qualifiers, dbRows);
+				break;
+			case T11:
+				t = computeT5T11(qualifiers.size());
+				break;
+		}
+		result.append(t);
+	}
+	return result;
+}

@@ -3,6 +3,7 @@
 
 #include "basicfuzzyset.h"
 #include "quantifier.h"
+
 #include <QList>
 #include <QVector>
 #include <QVariant>
@@ -10,6 +11,15 @@
 class QualityMeasures
 {
 public:
+	enum Measures {
+		T1 = 1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11
+	};
+
+	static QList<double> computeT(const QList<Measures> &measures,
+								  const Quantifier &quantifier,
+								  const QList<const BasicFuzzySet *> &qualifiers,
+								  const QList<const BasicFuzzySet *> &summarizers,
+								  const QList<QVector<QVariant> > &dbRows);
 	static double computeT1(const Quantifier &quantifier,
 							const QList<const BasicFuzzySet *> &qualifiers,
 							const QList<const BasicFuzzySet *> &summarizers,
