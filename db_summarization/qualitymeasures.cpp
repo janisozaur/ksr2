@@ -1,6 +1,7 @@
 #include "qualitymeasures.h"
 #include "intersection.h"
 #include "support.h"
+
 #include <QList>
 #include <QMap>
 #include <QVector>
@@ -8,23 +9,23 @@
 #include <cmath>
 
 // stopien prawdziwosci
-double  QualityMeasures::computeT1(const Quantifier &quantifier, const QList<const BasicFuzzySet *> &qualifiers, const QList<const BasicFuzzySet *> &summarizers, const QList<QVector<QVariant> > &dbRows) {
-    //int dbSize = summarizers.at(0).getElements().size();
-    const FuzzySet *summarizerIntersection = summarizers[0];
-    const FuzzySet *qualifierIntersection;
+double QualityMeasures::computeT1(const Quantifier &quantifier, const QList<const BasicFuzzySet *> &qualifiers, const QList<const BasicFuzzySet *> &summarizers, const QList<QVector<QVariant> > &dbRows) {
+	//int dbSize = summarizers.at(0).getElements().size();
+	const FuzzySet *summarizerIntersection = summarizers.at(0);
+	const FuzzySet *qualifierIntersection;
     Intersection *temp;
     for(int i = 1; i<summarizers.size(); i++){
         temp = new Intersection();
         temp->setFuzzySet1(summarizerIntersection);
-        temp->setFuzzySet2(summarizers[i]);
+		temp->setFuzzySet2(summarizers.at(i));
         summarizerIntersection = temp;
     }
     if(!qualifiers.empty()){
-        qualifierIntersection = qualifiers[0];
+		qualifierIntersection = qualifiers.at(0);
         for(int i = 1; i<qualifiers.size(); i++){
             temp = new Intersection();
             temp->setFuzzySet1(qualifierIntersection);
-            temp->setFuzzySet2(qualifiers[i]);
+			temp->setFuzzySet2(qualifiers.at(i));
             summarizerIntersection = temp;
         }
     }
@@ -60,39 +61,38 @@ double  QualityMeasures::computeT1(const Quantifier &quantifier, const QList<con
 }
 
 // stopien nieprecyzyjnosci (sumaryzatora lub kwalifikatora)
-double  QualityMeasures::computeT2T9(QList<const BasicFuzzySet *> fuzzySets, QList<QVector<QVariant> > dbRows){
+double QualityMeasures::computeT2T9(const QList<const BasicFuzzySet *> &fuzzySets, const QList<QVector<QVariant> > &dbRows){
     if(fuzzySets.empty()){
         return 1;
     }
 
     double result = 1;
+	Support support;
     for(int i =0; i<fuzzySets.size(); i++){
-        Support support = Support();
         support.setFuzzySet(fuzzySets[i]);
-        result*=support.cardinality(dbRows)/dbRows.size();
+		result*=support.cardinality(dbRows)/dbRows.size();
     }
     result = pow(result, 1.0/fuzzySets.size());
     return 1.0 - result;
 }
 
 // stopien pokrycia
-double  QualityMeasures::computeT3(QList<const BasicFuzzySet *> qualifiers, QList<const BasicFuzzySet *> summarizers, QList<QVector<QVariant> > dbRows){
-
-    const FuzzySet *summarizerIntersection = summarizers[0];
-    const FuzzySet *qualifierIntersection;
+double QualityMeasures::computeT3(const QList<const BasicFuzzySet *> &qualifiers, const QList<const BasicFuzzySet *> &summarizers, const QList<QVector<QVariant> > &dbRows){
+	const FuzzySet *summarizerIntersection = summarizers.at(0);
+	const FuzzySet *qualifierIntersection;
     Intersection *temp;
     for(int i = 1; i<summarizers.size(); i++){
         temp = new Intersection();
-        temp->setFuzzySet1(summarizerIntersection);
-        temp->setFuzzySet2(summarizers[i]);
+		temp->setFuzzySet1(summarizerIntersection);
+		temp->setFuzzySet2(summarizers.at(i));
         summarizerIntersection = temp;
     }
     if(!qualifiers.empty()){
-        qualifierIntersection = qualifiers[0];
+		qualifierIntersection = qualifiers.at(0);
         for(int i = 1; i<qualifiers.size(); i++){
             temp = new Intersection();
             temp->setFuzzySet1(qualifierIntersection);
-            temp->setFuzzySet2(qualifiers[i]);
+			temp->setFuzzySet2(qualifiers.at(i));
             summarizerIntersection = temp;
         }
     }
@@ -116,9 +116,9 @@ double  QualityMeasures::computeT3(QList<const BasicFuzzySet *> qualifiers, QLis
 }
 
 // miara trafnosci
-double  QualityMeasures::computeT4(QList<const BasicFuzzySet *> qualifiers, QList<const BasicFuzzySet *> summarizers, QList<QVector<QVariant> > dbRows){
+double QualityMeasures::computeT4(const QList<const BasicFuzzySet *> &qualifiers, const QList<const BasicFuzzySet *> &summarizers, const QList<QVector<QVariant> > &dbRows){
     if(summarizers.empty()){
-        return 1;
+		return 1;
     }
 
     double result = 1;
@@ -128,11 +128,11 @@ double  QualityMeasures::computeT4(QList<const BasicFuzzySet *> qualifiers, QLis
         result*=support.cardinality(dbRows)/dbRows.size();
     }
     result = result/summarizers.size();
-    return result - QualityMeasures::computeT3(qualifiers, summarizers, dbRows);
+	return fabs(result - QualityMeasures::computeT3(qualifiers, summarizers, dbRows));
 }
 
 // dlugosc podsumowania (sumaryzatora lub kwalifikatora)
-double  QualityMeasures::computeT5T11(int summarizersNum){
+double QualityMeasures::computeT5T11(const int &summarizersNum){
     if(summarizersNum==0){
         return 1;
     }
@@ -140,11 +140,12 @@ double  QualityMeasures::computeT5T11(int summarizersNum){
 }
 
 // stopien nieprecyzyjnosci kwantyfikatora
-double  QualityMeasures::computeT6(Quantifier quantifier, int dbRowsSize){
-    QList<QVariant> quantityList = QList<QVariant>();
+double QualityMeasures::computeT6(const Quantifier &quantifier, const int &dbRowsSize){
+	QList<QVariant> quantityList;
+	quantityList.reserve(dbRowsSize);
     if(quantifier.isRealtive()){
         for(int i =0; i<dbRowsSize; i++){
-            QVariant qVariant = QVariant((double)i * 1.0 /dbRowsSize);
+			QVariant qVariant = QVariant((double)i / qreal(dbRowsSize));
             quantityList.append(qVariant);
         }
     } else{
@@ -153,7 +154,6 @@ double  QualityMeasures::computeT6(Quantifier quantifier, int dbRowsSize){
             quantityList.append(qVariant);
         }
     }
-
 
     Support support = Support();
     support.setFuzzySet(&quantifier);
@@ -165,11 +165,12 @@ double  QualityMeasures::computeT6(Quantifier quantifier, int dbRowsSize){
 
 
 // stopien kardynalnosci kwantyfikatora
-double  QualityMeasures::computeT7(Quantifier quantifier, int dbRowsSize){
-    QList<QVariant> quantityList = QList<QVariant>();
+double QualityMeasures::computeT7(const Quantifier &quantifier, const int &dbRowsSize){
+	QList<QVariant> quantityList;
+	quantityList.reserve(dbRowsSize);
     if(quantifier.isRealtive()){
         for(int i =0; i<dbRowsSize; i++){
-            QVariant qVariant = QVariant((double)i * 1.0 /dbRowsSize);
+			QVariant qVariant = QVariant((double)i / qreal(dbRowsSize));
             quantityList.append(qVariant);
         }
     } else{
@@ -183,19 +184,69 @@ double  QualityMeasures::computeT7(Quantifier quantifier, int dbRowsSize){
 }
 
 // stopien kardynalnosci sumaryzatora lub kwalifikatora
-double  QualityMeasures::computeT8T10(QList<const BasicFuzzySet *> fuzzySets, QList<QVector<QVariant> > dbRows){
+double  QualityMeasures::computeT8T10(QList<const BasicFuzzySet *> fuzzySets, const QList<QVector<QVariant> > &dbRows){
     if(fuzzySets.empty()){
         return 1;
     }
 
     double result = 1;
+	Support support;
     for(int i =0; i<fuzzySets.size(); i++){
-        Support support = Support();
         support.setFuzzySet(fuzzySets[i]);
         result*=support.cardinality(dbRows)/dbRows.size();
     }
     result = pow(result, 1.0/fuzzySets.size());
     return 1.0 - result;
+}
+
+QList<double> QualityMeasures::computeT(const QList<Measures> &measures,
+										const Quantifier &quantifier,
+										const QList<const BasicFuzzySet *> &qualifiers,
+										const QList<const BasicFuzzySet *> &summarizers,
+										const QList<QVector<QVariant> > &dbRows)
+{
+	QList<double> result;
+	result.reserve(measures.size());
+	for (int i = 0; i < measures.size(); i++) {
+		double t;
+		switch (measures.at(i)) {
+			case T1:
+				t = computeT1(quantifier, qualifiers, summarizers, dbRows);
+				break;
+			case T2:
+				t = computeT2T9(summarizers, dbRows);
+				break;
+			case T3:
+				t = computeT3(qualifiers, summarizers, dbRows);
+				break;
+			case T4:
+				t = computeT4(qualifiers, summarizers, dbRows);
+				break;
+			case T5:
+				t = computeT5T11(summarizers.size());
+				break;
+			case T6:
+				t = computeT6(quantifier, dbRows.size());
+				break;
+			case T7:
+				t = computeT7(quantifier, dbRows.size());
+				break;
+			case T8:
+				t = computeT8T10(summarizers, dbRows);
+				break;
+			case T9:
+				t = computeT2T9(qualifiers, dbRows);
+				break;
+			case T10:
+				t = computeT8T10(qualifiers, dbRows);
+				break;
+			case T11:
+				t = computeT5T11(qualifiers.size());
+				break;
+		}
+		result.append(t);
+	}
+	return result;
 }
 
 // miara calkowita - srednia wazona miar
