@@ -2,11 +2,12 @@
 #include "intersection.h"
 #include "support.h"
 #include <QList>
+#include <QMap>
 #include <QVector>
 #include <QVariant>
 #include <cmath>
 
-
+// stopien prawdziwosci
 double  QualityMeasures::computeT1(const Quantifier &quantifier, const QList<const BasicFuzzySet *> &qualifiers, const QList<const BasicFuzzySet *> &summarizers, const QList<QVector<QVariant> > &dbRows) {
     //int dbSize = summarizers.at(0).getElements().size();
     const FuzzySet *summarizerIntersection = summarizers[0];
@@ -58,6 +59,7 @@ double  QualityMeasures::computeT1(const Quantifier &quantifier, const QList<con
     }
 }
 
+// stopien nieprecyzyjnosci (sumaryzatora lub kwalifikatora)
 double  QualityMeasures::computeT2T9(QList<const BasicFuzzySet *> fuzzySets, QList<QVector<QVariant> > dbRows){
     if(fuzzySets.empty()){
         return 1;
@@ -73,6 +75,7 @@ double  QualityMeasures::computeT2T9(QList<const BasicFuzzySet *> fuzzySets, QLi
     return 1.0 - result;
 }
 
+// stopien pokrycia
 double  QualityMeasures::computeT3(QList<const BasicFuzzySet *> qualifiers, QList<const BasicFuzzySet *> summarizers, QList<QVector<QVariant> > dbRows){
 
     const FuzzySet *summarizerIntersection = summarizers[0];
@@ -112,7 +115,7 @@ double  QualityMeasures::computeT3(QList<const BasicFuzzySet *> qualifiers, QLis
     }
 }
 
-
+// miara trafnosci
 double  QualityMeasures::computeT4(QList<const BasicFuzzySet *> qualifiers, QList<const BasicFuzzySet *> summarizers, QList<QVector<QVariant> > dbRows){
     if(summarizers.empty()){
         return 1;
@@ -128,6 +131,7 @@ double  QualityMeasures::computeT4(QList<const BasicFuzzySet *> qualifiers, QLis
     return result - QualityMeasures::computeT3(qualifiers, summarizers, dbRows);
 }
 
+// dlugosc podsumowania (sumaryzatora lub kwalifikatora)
 double  QualityMeasures::computeT5T11(int summarizersNum){
     if(summarizersNum==0){
         return 1;
@@ -135,6 +139,7 @@ double  QualityMeasures::computeT5T11(int summarizersNum){
     return 2.0*pow(0.5, summarizersNum);
 }
 
+// stopien nieprecyzyjnosci kwantyfikatora
 double  QualityMeasures::computeT6(Quantifier quantifier, int dbRowsSize){
     QList<QVariant> quantityList = QList<QVariant>();
     if(quantifier.isRealtive()){
@@ -159,6 +164,7 @@ double  QualityMeasures::computeT6(Quantifier quantifier, int dbRowsSize){
 }
 
 
+// stopien kardynalnosci kwantyfikatora
 double  QualityMeasures::computeT7(Quantifier quantifier, int dbRowsSize){
     QList<QVariant> quantityList = QList<QVariant>();
     if(quantifier.isRealtive()){
@@ -176,6 +182,7 @@ double  QualityMeasures::computeT7(Quantifier quantifier, int dbRowsSize){
     return quantifier.cardinality(quantityList)/quantityList.size();
 }
 
+// stopien kardynalnosci sumaryzatora lub kwalifikatora
 double  QualityMeasures::computeT8T10(QList<const BasicFuzzySet *> fuzzySets, QList<QVector<QVariant> > dbRows){
     if(fuzzySets.empty()){
         return 1;
@@ -189,4 +196,95 @@ double  QualityMeasures::computeT8T10(QList<const BasicFuzzySet *> fuzzySets, QL
     }
     result = pow(result, 1.0/fuzzySets.size());
     return 1.0 - result;
+}
+
+// miara calkowita - srednia wazona miar
+double  QualityMeasures::computeTotalQuality(const QMap<QString, double> &weightsMap, const Quantifier &quantifier, const QList<const BasicFuzzySet *> &qualifiers, const QList<const BasicFuzzySet *> &summarizers, const QList<QVector<QVariant> > &dbRows){
+    double weightsSum = 0;
+    double measuresSum = 0;
+    double weight;
+    double measure;
+
+    weight = weightsMap.value("T1");
+    if(weight > 0 ){
+        measure = QualityMeasures::computeT1(quantifier, qualifiers, summarizers, dbRows);
+        measuresSum += measure;
+        weightsSum += weight;
+    }
+
+    weight = weightsMap.value("T2");
+    if(weight > 0 ){
+        measure = QualityMeasures::computeT2T9(summarizers, dbRows);
+        measuresSum += measure;
+        weightsSum += weight;
+    }
+
+    weight = weightsMap.value("T3");
+    if(weight > 0 ){
+        measure = QualityMeasures::computeT3(qualifiers, summarizers, dbRows);
+        measuresSum += measure;
+        weightsSum += weight;
+    }
+
+    weight = weightsMap.value("T4");
+    if(weight > 0 ){
+        measure = QualityMeasures::computeT4(qualifiers, summarizers, dbRows);
+        measuresSum += measure;
+        weightsSum += weight;
+    }
+
+    weight = weightsMap.value("T5");
+    if(weight > 0 ){
+        measure = QualityMeasures::computeT5T11(summarizers.size());
+        measuresSum += measure;
+        weightsSum += weight;
+    }
+
+    weight = weightsMap.value("T6");
+    if(weight > 0 ){
+        measure = QualityMeasures::computeT6(quantifier, dbRows.size());
+        measuresSum += measure;
+        weightsSum += weight;
+    }
+
+    weight = weightsMap.value("T7");
+    if(weight > 0 ){
+        measure = QualityMeasures::computeT7(quantifier, dbRows.size());
+        measuresSum += measure;
+        weightsSum += weight;
+    }
+
+    weight = weightsMap.value("T8");
+    if(weight > 0 ){
+        measure = QualityMeasures::computeT8T10(summarizers, dbRows);
+        measuresSum += measure;
+        weightsSum += weight;
+    }
+
+    weight = weightsMap.value("T9");
+    if(weight > 0 ){
+        measure = QualityMeasures::computeT2T9(qualifiers, dbRows);
+        measuresSum += measure;
+        weightsSum += weight;
+    }
+
+    weight = weightsMap.value("T10");
+    if(weight > 0 ){
+        measure = QualityMeasures::computeT8T10(qualifiers, dbRows);
+        measuresSum += measure;
+        weightsSum += weight;
+    }
+
+    weight = weightsMap.value("T11");
+    if(weight > 0 ){
+        measure = QualityMeasures::computeT5T11(qualifiers.size());
+        measuresSum += measure;
+        weightsSum += weight;
+    }
+
+    if(weightsSum == 0){
+        return 0;
+    } else{
+        return measuresSum/weightsSum;
+    }
 }

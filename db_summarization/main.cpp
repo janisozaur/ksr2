@@ -101,5 +101,20 @@ int main(int argc, char *argv[])
     qDebug()<<"T9: "<<QualityMeasures::computeT2T9(qualifiers, dbRows);
     qDebug()<<"T10: "<<QualityMeasures::computeT8T10(qualifiers, dbRows);
     qDebug()<<"T11: "<<QualityMeasures::computeT5T11(qualifiers.size());
+
+    QMap<QString, double> weightsMap = QMap<QString, double>();
+    weightsMap.insert("T1", 1);
+    weightsMap.insert("T2", 1);
+    weightsMap.insert("T3", 1);
+    weightsMap.insert("T4", 1);
+    weightsMap.insert("T5", 1);
+    weightsMap.insert("T6", 1);
+    weightsMap.insert("T7", 1);
+    weightsMap.insert("T8", 1);
+    weightsMap.insert("T9", 1);
+    weightsMap.insert("T10", 1);
+    weightsMap.insert("T11", 1);
+
+    qDebug()<<"Total: "<<QualityMeasures::computeTotalQuality(weightsMap, moreQuantifier, qualifiers, summarizers, dbRows);
     return 0;
 }
