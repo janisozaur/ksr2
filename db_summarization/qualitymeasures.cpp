@@ -1,6 +1,7 @@
 #include "qualitymeasures.h"
 #include "intersection.h"
 #include "support.h"
+#include "linguisticvalue.h"
 
 #include <QList>
 #include <QMap>
@@ -9,7 +10,7 @@
 #include <cmath>
 
 // stopien prawdziwosci
-double QualityMeasures::computeT1(const Quantifier &quantifier, const QList<const BasicFuzzySet *> &qualifiers, const QList<const BasicFuzzySet *> &summarizers, const QList<QVector<QVariant> > &dbRows) {
+double QualityMeasures::computeT1(const Quantifier &quantifier, const QList<const LinguisticValue *> &qualifiers, const QList<const LinguisticValue *> &summarizers, const QList<QVector<QVariant> > &dbRows) {
 	//int dbSize = summarizers.at(0).getElements().size();
 	const FuzzySet *summarizerIntersection = summarizers.at(0);
 	const FuzzySet *qualifierIntersection;
@@ -61,7 +62,7 @@ double QualityMeasures::computeT1(const Quantifier &quantifier, const QList<cons
 }
 
 // stopien nieprecyzyjnosci (sumaryzatora lub kwalifikatora)
-double QualityMeasures::computeT2T9(const QList<const BasicFuzzySet *> &fuzzySets, const QList<QVector<QVariant> > &dbRows){
+double QualityMeasures::computeT2T9(const QList<const LinguisticValue *> &fuzzySets, const QList<QVector<QVariant> > &dbRows){
     if(fuzzySets.empty()){
         return 1;
     }
@@ -77,7 +78,7 @@ double QualityMeasures::computeT2T9(const QList<const BasicFuzzySet *> &fuzzySet
 }
 
 // stopien pokrycia
-double QualityMeasures::computeT3(const QList<const BasicFuzzySet *> &qualifiers, const QList<const BasicFuzzySet *> &summarizers, const QList<QVector<QVariant> > &dbRows){
+double QualityMeasures::computeT3(const QList<const LinguisticValue *> &qualifiers, const QList<const LinguisticValue *> &summarizers, const QList<QVector<QVariant> > &dbRows){
 	const FuzzySet *summarizerIntersection = summarizers.at(0);
 	const FuzzySet *qualifierIntersection;
     Intersection *temp;
@@ -116,7 +117,7 @@ double QualityMeasures::computeT3(const QList<const BasicFuzzySet *> &qualifiers
 }
 
 // miara trafnosci
-double QualityMeasures::computeT4(const QList<const BasicFuzzySet *> &qualifiers, const QList<const BasicFuzzySet *> &summarizers, const QList<QVector<QVariant> > &dbRows){
+double QualityMeasures::computeT4(const QList<const LinguisticValue *> &qualifiers, const QList<const LinguisticValue *> &summarizers, const QList<QVector<QVariant> > &dbRows){
     if(summarizers.empty()){
 		return 1;
     }
@@ -184,7 +185,7 @@ double QualityMeasures::computeT7(const Quantifier &quantifier, const int &dbRow
 }
 
 // stopien kardynalnosci sumaryzatora lub kwalifikatora
-double  QualityMeasures::computeT8T10(QList<const BasicFuzzySet *> fuzzySets, const QList<QVector<QVariant> > &dbRows){
+double  QualityMeasures::computeT8T10(QList<const LinguisticValue *> fuzzySets, const QList<QVector<QVariant> > &dbRows){
     if(fuzzySets.empty()){
         return 1;
     }
@@ -201,8 +202,8 @@ double  QualityMeasures::computeT8T10(QList<const BasicFuzzySet *> fuzzySets, co
 
 QList<double> QualityMeasures::computeT(const QList<Measures> &measures,
 										const Quantifier &quantifier,
-										const QList<const BasicFuzzySet *> &qualifiers,
-										const QList<const BasicFuzzySet *> &summarizers,
+                                        const QList<const LinguisticValue *> &qualifiers,
+                                        const QList<const LinguisticValue *> &summarizers,
 										const QList<QVector<QVariant> > &dbRows)
 {
 	QList<double> result;
@@ -250,7 +251,7 @@ QList<double> QualityMeasures::computeT(const QList<Measures> &measures,
 }
 
 // miara calkowita - srednia wazona miar
-double  QualityMeasures::computeTotalQuality(const QMap<QString, double> &weightsMap, const Quantifier &quantifier, const QList<const BasicFuzzySet *> &qualifiers, const QList<const BasicFuzzySet *> &summarizers, const QList<QVector<QVariant> > &dbRows){
+double  QualityMeasures::computeTotalQuality(const QMap<QString, double> &weightsMap, const Quantifier &quantifier, const QList<const LinguisticValue *> &qualifiers, const QList<const LinguisticValue *> &summarizers, const QList<QVector<QVariant> > &dbRows){
     double weightsSum = 0;
     double measuresSum = 0;
     double weight;

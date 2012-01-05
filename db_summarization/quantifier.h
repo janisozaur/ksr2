@@ -2,8 +2,9 @@
 #define QUANTIFIER_H
 
 #include "basicfuzzyset.h"
+#include "linguisticvalue.h"
 
-class Quantifier : public BasicFuzzySet
+class Quantifier : public LinguisticValue
 {
 private:
     bool relative;

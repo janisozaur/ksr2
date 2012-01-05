@@ -5,6 +5,7 @@
 #include "trapezoidfunction.h"
 #include "quantifier.h"
 #include "qualitymeasures.h"
+#include "linguisticvalue.h"
 #include <iostream>
 
 int main(int argc, char *argv[])
@@ -74,6 +75,7 @@ int main(int argc, char *argv[])
 	moreMembership.setB(1);
     Quantifier moreQuantifier = Quantifier();
     moreQuantifier.setMembershipFunction(&moreMembership);
+    moreQuantifier.setLabel("wiekszosc");
     moreQuantifier.setRelative(true);
 
     TrapezoidFunction lowRainFunction = TrapezoidFunction();
@@ -81,14 +83,15 @@ int main(int argc, char *argv[])
     lowRainFunction.setB(0);
     lowRainFunction.setC(20);
     lowRainFunction.setD(50);
-    BasicFuzzySet lowRainSet = BasicFuzzySet();
+    LinguisticValue lowRainSet = LinguisticValue();
     lowRainSet.setColNum(19);
+    lowRainSet.setLabel("niskie opady");
     lowRainSet.setMembershipFunction(&lowRainFunction);
 
-	QList<const BasicFuzzySet *> summarizers;
+    QList<const LinguisticValue *> summarizers;
 	summarizers.append(&lowRainSet);
 
-    QList<const BasicFuzzySet *> qualifiers = QList< const BasicFuzzySet*>();
+    QList<const LinguisticValue *> qualifiers = QList< const LinguisticValue*>();
 
     qDebug()<<"T1: "<<QualityMeasures::computeT1(moreQuantifier, qualifiers, summarizers, dbRows);
     qDebug()<<"T2: "<<QualityMeasures::computeT2T9(summarizers, dbRows);

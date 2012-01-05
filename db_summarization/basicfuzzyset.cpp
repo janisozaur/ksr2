@@ -19,10 +19,3 @@ const MembershipFuncInterface *BasicFuzzySet::getMembershipFunction() const {
 void BasicFuzzySet::setMembershipFunction(const MembershipFuncInterface *membershipFunction) {
     this->membershipFunction = membershipFunction;
 }
-
-double BasicFuzzySet::getColNum() const {
-    return colNum;
-}
-void BasicFuzzySet::setColNum(const int colNum) {
-    this->colNum = colNum;
-}
