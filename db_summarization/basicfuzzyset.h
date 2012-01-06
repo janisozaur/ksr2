@@ -10,6 +10,7 @@ class BasicFuzzySet : public FuzzySet
 {
 private:
 	const MembershipFuncInterface *membershipFunction;
+protected:
     int colNum;
 public:
     BasicFuzzySet();
@@ -18,7 +19,7 @@ public:
 	const MembershipFuncInterface *getMembershipFunction() const;
 	void setMembershipFunction(const MembershipFuncInterface *membershipFunction);
 
-    double getColNum() const;
+    const int getColNum() const;
     void setColNum(const int colNum);
 };
 

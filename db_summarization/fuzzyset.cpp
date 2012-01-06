@@ -12,7 +12,7 @@ double FuzzySet::cardinality(const QList<QVariant> &element) const {
 double FuzzySet::cardinality(const QList<QVector<QVariant> > &elements) const {
 	double sum = 0;
 	for (int i = 0; i < elements.size(); i++) {
-		sum += membership(elements.at(i));
+        sum += membership(elements.at(i));
     }
     return sum;
 }

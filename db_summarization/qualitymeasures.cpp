@@ -8,6 +8,7 @@
 #include <QVector>
 #include <QVariant>
 #include <cmath>
+#include <QDebug>
 
 // stopien prawdziwosci
 double QualityMeasures::computeT1(const Quantifier &quantifier, const QList<const LinguisticValue *> &qualifiers, const QList<const LinguisticValue *> &summarizers, const QList<QVector<QVariant> > &dbRows) {
@@ -16,6 +17,7 @@ double QualityMeasures::computeT1(const Quantifier &quantifier, const QList<cons
 	const FuzzySet *qualifierIntersection;
     Intersection *temp;
     for(int i = 1; i<summarizers.size(); i++){
+
         temp = new Intersection();
         temp->setFuzzySet1(summarizerIntersection);
 		temp->setFuzzySet2(summarizers.at(i));
@@ -38,6 +40,7 @@ double QualityMeasures::computeT1(const Quantifier &quantifier, const QList<cons
     if(qualifiers.empty()){
         double sum = 0;
         for(int i=0; i<dbRows.size(); i++){
+            //qDebug()<<i;
             sum += summarizerIntersection->membership(dbRows.at(i));
         }
         return quantifier.membership(sum/m);
@@ -191,10 +194,8 @@ double  QualityMeasures::computeT8T10(QList<const LinguisticValue *> fuzzySets, 
     }
 
     double result = 1;
-	Support support;
     for(int i =0; i<fuzzySets.size(); i++){
-        support.setFuzzySet(fuzzySets[i]);
-        result*=support.cardinality(dbRows)/dbRows.size();
+        result*=fuzzySets[i]->cardinality(dbRows)/dbRows.size();
     }
     result = pow(result, 1.0/fuzzySets.size());
     return 1.0 - result;

@@ -35,7 +35,8 @@ SOURCES += main.cpp \
 	qualitymeasures.cpp \
 	MembershipFunctionFactory.cpp \
     summarization.cpp \
-    linguisticvalue.cpp
+    linguisticvalue.cpp \
+    fileparser.cpp
 
 HEADERS += \
 	membershipfuncineterface.h \
@@ -53,4 +54,5 @@ HEADERS += \
 	qualitymeasures.h \
 	MembershipFunctionFactory.h \
     linguisticvalue.h \
-    summarization.h
+    summarization.h \
+    fileparser.h
