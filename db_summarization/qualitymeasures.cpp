@@ -341,3 +341,63 @@ double  QualityMeasures::computeTotalQuality(const QMap<QString, double> &weight
         return measuresSum/weightsSum;
     }
 }
+
+
+double QualityMeasures::computeT1(const Summarization &summarization,const QList<QVector<QVariant> > &dbRows){
+    return QualityMeasures::computeT1(summarization.getQuantifier(), summarization.getQualifiers(), summarization.getSummarizers(), dbRows);
+}
+
+double QualityMeasures::computeT2(const Summarization &summarization, const QList<QVector<QVariant> > &dbRows){
+    return QualityMeasures::computeT2T9(summarization.getSummarizers(), dbRows);
+}
+
+double QualityMeasures::computeT3(const Summarization &summarization, const QList<QVector<QVariant> > &dbRows){
+    return QualityMeasures::computeT3(summarization.getQualifiers(), summarization.getSummarizers(), dbRows);
+}
+
+double QualityMeasures::computeT4(const Summarization &summarization, const QList<QVector<QVariant> > &dbRows){
+    return QualityMeasures::computeT4(summarization.getQualifiers(), summarization.getSummarizers(), dbRows);
+}
+
+double QualityMeasures::computeT5(const Summarization &summarization){
+    return QualityMeasures::computeT5T11(summarization.getSummarizers().size());
+}
+
+double QualityMeasures::computeT6(const Summarization &summarization, const QList<QVector<QVariant> > &dbRows){
+    return QualityMeasures::computeT6(summarization.getQuantifier(), dbRows.size());
+}
+
+double QualityMeasures::computeT7(const Summarization &summarization, const QList<QVector<QVariant> > &dbRows){
+    return QualityMeasures::computeT7(summarization.getQuantifier(), dbRows.size());
+}
+
+double QualityMeasures::computeT8(const Summarization &summarization, const QList<QVector<QVariant> > &dbRows){
+    return QualityMeasures::computeT8T10(summarization.getSummarizers(), dbRows);
+}
+
+double QualityMeasures::computeT9(const Summarization &summarization, const QList<QVector<QVariant> > &dbRows){
+    return QualityMeasures::computeT2T9(summarization.getQualifiers(), dbRows);
+}
+
+double QualityMeasures::computeT10(const Summarization &summarization, const QList<QVector<QVariant> > &dbRows){
+    return QualityMeasures::computeT8T10(summarization.getSummarizers(), dbRows);
+}
+
+double QualityMeasures::computeT11(const Summarization &summarization){
+    return QualityMeasures::computeT5T11(summarization.getQualifiers().size());
+}
+
+double QualityMeasures::computeTotalQuality(const QMap<QString, double> &weightsMap, const Summarization &summarization, const QList<QVector<QVariant> > &dbRows){
+    return QualityMeasures::computeTotalQuality(weightsMap, summarization.getQuantifier(), summarization.getQualifiers(), summarization.getSummarizers(), dbRows);
+}
+
+QList<QPair<double, Summarization> > QualityMeasures::computeTotalQuality(const QMap<QString, double> &weightsMap, const QList<Summarization> &summarizationList, const QList<QVector<QVariant> > &dbRows){
+    QList<QPair<double, Summarization> > result = QList<QPair<double, Summarization> >();
+    for(int i = 0; i<summarizationList.size(); i++){
+        Summarization summarization = summarizationList.at(i);
+        double quality = QualityMeasures::computeTotalQuality(weightsMap, summarization.getQuantifier(), summarization.getQualifiers(), summarization.getSummarizers(), dbRows);
+        result.append(QPair<double, Summarization>(quality,summarization));
+    }
+    //qSort(result); //sortowanie w kolejnosci malejacej
+    return result;
+}

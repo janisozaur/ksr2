@@ -1,1 +1,2 @@
 niskie opady:19:TRAPEZOID:0:0:20:50
+niska temperatura:4:TRAPEZOID:-30:-30:0:10

@@ -36,7 +36,8 @@ SOURCES += main.cpp \
 	MembershipFunctionFactory.cpp \
     summarization.cpp \
     linguisticvalue.cpp \
-    fileparser.cpp
+    fileparser.cpp \
+    summarizationgenerator.cpp
 
 HEADERS += \
 	membershipfuncineterface.h \
@@ -55,4 +56,5 @@ HEADERS += \
 	MembershipFunctionFactory.h \
     linguisticvalue.h \
     summarization.h \
-    fileparser.h
+    fileparser.h \
+    summarizationgenerator.h

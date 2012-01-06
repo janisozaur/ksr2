@@ -3,11 +3,15 @@
 #include <QStringList>
 #include <QDebug>
 #include <QList>
+#include <QBitArray>
+#include <QPair>
 #include "trapezoidfunction.h"
 #include "quantifier.h"
 #include "qualitymeasures.h"
 #include "linguisticvalue.h"
 #include "fileparser.h"
+#include "summarization.h"
+#include "summarizationgenerator.h"
 #include <iostream>
 
 int main(int argc, char *argv[])
@@ -25,31 +29,9 @@ int main(int argc, char *argv[])
     QList<Quantifier> quantifierList =  parser.parseQuantifiers("fuzzy_sets_quantifiers.txt");
     qDebug()<<"Liczba kwantyfikatorow: "<< quantifierList.size();
 
-    QList<const LinguisticValue *> summarizers =  parser.parseLinguisticValues("fuzzy_sets_lingValues.txt");
+    QMap<int, QList<const LinguisticValue *> >linguisticValMap = parser.parseLinguisticValues("fuzzy_sets_lingValues.txt");
+    QList<const LinguisticValue *> summarizers =  parser.parseLinguisticValues("fuzzy_sets_lingValues.txt").value(19);
     qDebug()<<"Liczba wartosci lingwistycznych: "<< summarizers.size();
-
-//    TrapezoidFunction moreMembership = TrapezoidFunction();
-//    moreMembership.setA(0.5);
-//    moreMembership.setB(0.7);
-//	moreMembership.setB(1);
-//	moreMembership.setB(1);
-//    Quantifier moreQuantifier = Quantifier();
-//    moreQuantifier.setMembershipFunction(&moreMembership);
-//    moreQuantifier.setLabel("wiekszosc");
-//    moreQuantifier.setRelative(true);
-
-//    TrapezoidFunction lowRainFunction = TrapezoidFunction();
-//    lowRainFunction.setA(0);
-//    lowRainFunction.setB(0);
-//    lowRainFunction.setC(20);
-//    lowRainFunction.setD(50);
-//    LinguisticValue lowRainSet = LinguisticValue();
-//    lowRainSet.setColNum(19);
-//    lowRainSet.setLabel("niskie opady");
-//    lowRainSet.setMembershipFunction(&lowRainFunction);
-
-//    QList<const LinguisticValue *> summarizers;
-//	summarizers.append(&lowRainSet);
 
     QList<const LinguisticValue *> qualifiers = QList< const LinguisticValue*>();
 
@@ -92,5 +74,14 @@ int main(int argc, char *argv[])
     weightsMap.insert("T11", 1);
 
     qDebug()<<"Total: "<<QualityMeasures::computeTotalQuality(weightsMap, quantifierList.at(0), qualifiers, summarizers, dbRows);
+
+    SummarizationGenerator generator = SummarizationGenerator();
+    QList<Summarization> summarizationList = generator.generateAll(quantifierList, linguisticValMap);
+    QList<QPair<double, Summarization> > summarizationMeasureList= QualityMeasures::computeTotalQuality(weightsMap,summarizationList, dbRows);
+
+    qDebug()<<"Summarizations: "<<summarizationList.size();
+
+    generator.saveSummarizations(summarizationMeasureList, "summarizations.txt");
+
     return 0;
 }

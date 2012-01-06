@@ -47,9 +47,9 @@ QList<Quantifier> FileParser::parseQuantifiers(QString filePath){
     return list;
 }
 
-
-QList<const LinguisticValue *> FileParser::parseLinguisticValues(QString filePath){
-    QList<const LinguisticValue *> list = QList<const LinguisticValue *>();
+// zwraca mape numerow kolumn i listy przypisanych do nich wartosci lingwistycznych
+QMap<int, QList<const LinguisticValue *> > FileParser::parseLinguisticValues(QString filePath){
+    QMap<int, QList<const LinguisticValue *> >map = QMap<int, QList<const LinguisticValue *> >();
     MembershipFuncFactory factory = MembershipFuncFactory();
 
     QFile file(filePath);
@@ -71,10 +71,10 @@ QList<const LinguisticValue *> FileParser::parseLinguisticValues(QString filePat
         variantMap.insert("params", variantList);
 
         linguisticValue->setMembershipFunction(factory.getFunction(variantMap));
-        list.append(linguisticValue);
+        map[stringList.at(1).toInt()].append(linguisticValue);
     }
 
-    return list;
+    return map;
 }
 
 
