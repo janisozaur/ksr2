@@ -59,6 +59,8 @@ public:
 
     static QList<QPair<double, Summarization> > computeTotalQuality(const QMap<QString, double> &weightsMap, const QList<Summarization> &summarizationList, const QList<QVector<QVariant> > &dbRows);
 
+private:
+    static bool pairGreaterThan(const QPair<double, Summarization> &p1, const QPair<double, Summarization> &p2);
 };
 
 #endif // QUALITYMEASURES_H

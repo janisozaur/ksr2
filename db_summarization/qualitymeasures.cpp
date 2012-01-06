@@ -391,6 +391,11 @@ double QualityMeasures::computeTotalQuality(const QMap<QString, double> &weights
     return QualityMeasures::computeTotalQuality(weightsMap, summarization.getQuantifier(), summarization.getQualifiers(), summarization.getSummarizers(), dbRows);
 }
 
+bool QualityMeasures::pairGreaterThan(const QPair<double, Summarization> &p1, const QPair<double, Summarization> &p2)
+ {
+     return p1.first > p2.first;
+ }
+
 QList<QPair<double, Summarization> > QualityMeasures::computeTotalQuality(const QMap<QString, double> &weightsMap, const QList<Summarization> &summarizationList, const QList<QVector<QVariant> > &dbRows){
     QList<QPair<double, Summarization> > result = QList<QPair<double, Summarization> >();
     for(int i = 0; i<summarizationList.size(); i++){
@@ -398,6 +403,6 @@ QList<QPair<double, Summarization> > QualityMeasures::computeTotalQuality(const 
         double quality = QualityMeasures::computeTotalQuality(weightsMap, summarization.getQuantifier(), summarization.getQualifiers(), summarization.getSummarizers(), dbRows);
         result.append(QPair<double, Summarization>(quality,summarization));
     }
-    //qSort(result); //sortowanie w kolejnosci malejacej
+    qSort(result.begin(), result.end(), pairGreaterThan); //sortowanie w kolejnosci malejacej
     return result;
 }
