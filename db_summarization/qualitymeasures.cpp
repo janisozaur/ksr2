@@ -29,7 +29,7 @@ double QualityMeasures::computeT1(const Quantifier &quantifier, const QList<cons
             temp = new Intersection();
             temp->setFuzzySet1(qualifierIntersection);
 			temp->setFuzzySet2(qualifiers.at(i));
-            summarizerIntersection = temp;
+            qualifierIntersection = temp;
         }
     }
     int m=1;
@@ -97,7 +97,7 @@ double QualityMeasures::computeT3(const QList<const LinguisticValue *> &qualifie
             temp = new Intersection();
             temp->setFuzzySet1(qualifierIntersection);
 			temp->setFuzzySet2(qualifiers.at(i));
-            summarizerIntersection = temp;
+            qualifierIntersection = temp;
         }
     }
 
