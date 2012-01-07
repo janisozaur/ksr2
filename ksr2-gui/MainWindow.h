@@ -32,6 +32,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     int mCount;
+    FunctionType mFunctionType;
 };
 
 #endif // MAINWINDOW_H

@@ -12,6 +12,8 @@ QMainWindow(parent),
 ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    on_quantTriRadioButton_toggled(false);
+    on_quantTriRadioButton_toggled(true);
 }
 
 MainWindow::~MainWindow()
@@ -22,12 +24,14 @@ MainWindow::~MainWindow()
 void MainWindow::on_quantTriRadioButton_toggled(bool checked)
 {
     Range r = (ui->quantAbsRadioButton->isChecked() ? Absolute : Relative);
+    mFunctionType = Triangle;
     addSpinBoxes(checked, 3, r);
 }
 
 void MainWindow::on_quantTraRadioButton_toggled(bool checked)
 {
     Range r = (ui->quantAbsRadioButton->isChecked() ? Absolute : Relative);
+    mFunctionType = Trapezoid;
     addSpinBoxes(checked, 4, r);
 }
 
@@ -86,14 +90,42 @@ void MainWindow::on_quantAbsRadioButton_toggled(bool checked)
 void MainWindow::on_quantifierAddPushButton_clicked()
 {
     QList<QAbstractSpinBox *> sbList = ui->quantifierValuesGroupBox->findChildren<QAbstractSpinBox *>();
+    bool ok = true;
     QList<double> values;
     for (int i = 0; i < sbList.size(); i++) {
-        values << sbList.at(i)->text().toDouble();
+        double val = sbList.at(i)->text().toDouble();
+        if (i > 0 && values.last() > val) {
+            ok = false;
+        }
+        values << val;
+    }
+    if (!ok) {
+        QString err = "problem with values";
+        qDebug() << err;
+        ui->statusBar->showMessage(err, 2000);
+        return;
     }
     Range r = (ui->quantAbsRadioButton->isChecked() ? Absolute : Relative);
-    Quantifier *q = new Quantifier(ui->quantifierNameLineEdit->text(), values, r, this);
+    const QString name = ui->quantifierNameLineEdit->text();
+    if (name.isNull() || name.isEmpty()) {
+        QString err = "problem with name";
+        qDebug() << err;
+        ui->statusBar->showMessage(err, 2000);
+        return;
+    }
+    if (ui->quantifiersListWidget->findItems(name, Qt::MatchFixedString).size() > 0) {
+        QString err = "such item already exists";
+        qDebug() << err;
+        ui->statusBar->showMessage(err, 2000);
+        return;
+    }
+    Quantifier *q = new Quantifier(name, values, r, (mFunctionType == Triangle ? "TRIANGLE" : "TRAPEZOID"), this);
     QVariant v(QMetaType::QObjectStar, q);
     QListWidgetItem *item = new QListWidgetItem(q->quantName());
     item->setData(Qt::UserRole, v);
     ui->quantifiersListWidget->addItem(item);
+    ui->statusBar->showMessage(QString("quantifier \"%1\" added successfully").arg(name), 2000);
+    QTextStream stream(stdout);
+    stream << (*q) << endl;
 }
+
