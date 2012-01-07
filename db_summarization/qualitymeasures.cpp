@@ -112,7 +112,7 @@ double QualityMeasures::computeT3(const QList<const LinguisticValue *> &qualifie
 
         Support support1 = Support();
         Support support2 = Support();
-        support1.setFuzzySet(summarizerIntersection);
+        support1.setFuzzySet(&intersection);
         support2.setFuzzySet(qualifierIntersection);
 
         return support1.cardinality(dbRows)/support2.cardinality(dbRows);
@@ -261,6 +261,9 @@ double  QualityMeasures::computeTotalQuality(const QMap<QString, double> &weight
     weight = weightsMap.value("T1");
     if(weight > 0 ){
         measure = QualityMeasures::computeT1(quantifier, qualifiers, summarizers, dbRows);
+        if (measure >1){
+            qDebug()<<"T1 "<<measure ;
+        }
         measuresSum += measure;
         weightsSum += weight;
     }
@@ -268,6 +271,9 @@ double  QualityMeasures::computeTotalQuality(const QMap<QString, double> &weight
     weight = weightsMap.value("T2");
     if(weight > 0 ){
         measure = QualityMeasures::computeT2T9(summarizers, dbRows);
+        if (measure >1){
+            qDebug()<<"T2 "<<measure ;
+        }
         measuresSum += measure;
         weightsSum += weight;
     }
@@ -275,6 +281,9 @@ double  QualityMeasures::computeTotalQuality(const QMap<QString, double> &weight
     weight = weightsMap.value("T3");
     if(weight > 0 ){
         measure = QualityMeasures::computeT3(qualifiers, summarizers, dbRows);
+        if (measure >1){
+            qDebug()<<"T3 "<<measure ;
+        }
         measuresSum += measure;
         weightsSum += weight;
     }
@@ -282,6 +291,9 @@ double  QualityMeasures::computeTotalQuality(const QMap<QString, double> &weight
     weight = weightsMap.value("T4");
     if(weight > 0 ){
         measure = QualityMeasures::computeT4(qualifiers, summarizers, dbRows);
+        if (measure >1){
+            qDebug()<<"T4 "<<measure ;
+        }
         measuresSum += measure;
         weightsSum += weight;
     }
@@ -289,6 +301,9 @@ double  QualityMeasures::computeTotalQuality(const QMap<QString, double> &weight
     weight = weightsMap.value("T5");
     if(weight > 0 ){
         measure = QualityMeasures::computeT5T11(summarizers.size());
+        if (measure >1){
+            qDebug()<<"T5 "<<measure ;
+        }
         measuresSum += measure;
         weightsSum += weight;
     }
@@ -296,6 +311,9 @@ double  QualityMeasures::computeTotalQuality(const QMap<QString, double> &weight
     weight = weightsMap.value("T6");
     if(weight > 0 ){
         measure = QualityMeasures::computeT6(quantifier, dbRows.size());
+        if (measure >1){
+            qDebug()<<"T6 "<<measure ;
+        }
         measuresSum += measure;
         weightsSum += weight;
     }
@@ -303,6 +321,9 @@ double  QualityMeasures::computeTotalQuality(const QMap<QString, double> &weight
     weight = weightsMap.value("T7");
     if(weight > 0 ){
         measure = QualityMeasures::computeT7(quantifier, dbRows.size());
+        if (measure >1){
+            qDebug()<<"T7 "<<measure ;
+        }
         measuresSum += measure;
         weightsSum += weight;
     }
@@ -310,6 +331,9 @@ double  QualityMeasures::computeTotalQuality(const QMap<QString, double> &weight
     weight = weightsMap.value("T8");
     if(weight > 0 ){
         measure = QualityMeasures::computeT8T10(summarizers, dbRows);
+        if (measure >1){
+            qDebug()<<"T8 "<<measure ;
+        }
         measuresSum += measure;
         weightsSum += weight;
     }
@@ -317,6 +341,9 @@ double  QualityMeasures::computeTotalQuality(const QMap<QString, double> &weight
     weight = weightsMap.value("T9");
     if(weight > 0 ){
         measure = QualityMeasures::computeT2T9(qualifiers, dbRows);
+        if (measure >1){
+            qDebug()<<"T9 "<<measure ;
+        }
         measuresSum += measure;
         weightsSum += weight;
     }
@@ -324,6 +351,9 @@ double  QualityMeasures::computeTotalQuality(const QMap<QString, double> &weight
     weight = weightsMap.value("T10");
     if(weight > 0 ){
         measure = QualityMeasures::computeT8T10(qualifiers, dbRows);
+        if (measure >1){
+            qDebug()<<"T10 "<<measure ;
+        }
         measuresSum += measure;
         weightsSum += weight;
     }
@@ -331,6 +361,9 @@ double  QualityMeasures::computeTotalQuality(const QMap<QString, double> &weight
     weight = weightsMap.value("T11");
     if(weight > 0 ){
         measure = QualityMeasures::computeT5T11(qualifiers.size());
+        if (measure >1){
+            qDebug()<<"T11 "<<measure ;
+        }
         measuresSum += measure;
         weightsSum += weight;
     }
