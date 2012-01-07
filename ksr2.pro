@@ -3,4 +3,5 @@ TEMPLATE = subdirs
 SUBDIRS += \
     data_aggregator \
 	db_summarization \
-	qjson
+	qjson \
+    ksr2-gui
