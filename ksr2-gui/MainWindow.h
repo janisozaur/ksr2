@@ -3,6 +3,7 @@
 
 #include "Common.h"
 
+#include <QListWidgetItem>
 #include <QMainWindow>
 
 namespace Ui {
@@ -28,6 +29,10 @@ private slots:
     void on_quantAbsRadioButton_toggled(bool checked);
 
     void on_quantifierAddPushButton_clicked();
+
+    void on_quantifiersListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+
+    void on_quantifierDeletePushButton_clicked();
 
 private:
     Ui::MainWindow *ui;

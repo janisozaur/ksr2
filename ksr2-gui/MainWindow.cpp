@@ -119,13 +119,33 @@ void MainWindow::on_quantifierAddPushButton_clicked()
         ui->statusBar->showMessage(err, 2000);
         return;
     }
-    Quantifier *q = new Quantifier(name, values, r, (mFunctionType == Triangle ? "TRIANGLE" : "TRAPEZOID"), this);
-    QVariant v(QMetaType::QObjectStar, q);
-    QListWidgetItem *item = new QListWidgetItem(q->quantName());
+    Quantifier q(name, values, r, (mFunctionType == Triangle ? "TRIANGLE" : "TRAPEZOID"), this);
+    //qDebug() << q << (void *)q << qobject_cast<QObject *>(q);
+    QVariant v = QVariant::fromValue(q);
+    QListWidgetItem *item = new QListWidgetItem(q.quantName());
     item->setData(Qt::UserRole, v);
     ui->quantifiersListWidget->addItem(item);
     ui->statusBar->showMessage(QString("quantifier \"%1\" added successfully").arg(name), 2000);
     QTextStream stream(stdout);
-    stream << (*q) << endl;
+    stream << (q) << endl;
 }
 
+
+void MainWindow::on_quantifiersListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
+{
+    if (current == nullptr) {
+        ui->quantifierDeletePushButton->setEnabled(false);
+    } else {
+        ui->quantifierDeletePushButton->setEnabled(true);
+    }
+}
+
+void MainWindow::on_quantifierDeletePushButton_clicked()
+{
+    QListWidgetItem *li = ui->quantifiersListWidget->takeItem(ui->quantifiersListWidget->currentRow());
+    QVariant v = li->data(Qt::UserRole);
+    qDebug() << "type: " << v.typeName();
+    qDebug() << "can convert:" << v.canConvert<Quantifier>();
+    Quantifier q = v.value<Quantifier>();
+    qDebug() << "removing" << q.quantName();
+}

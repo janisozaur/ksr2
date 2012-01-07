@@ -5,6 +5,7 @@
 
 #include <QObject>
 #include <QTextStream>
+#include <QMetaType>
 
 class Quantifier : public QObject
 {
@@ -13,7 +14,7 @@ public:
     explicit Quantifier(QObject *parent = 0);
     explicit Quantifier(const QString &name, const QList<double> &values,
                         const Range &range, const QString &type, QObject *parent = 0);
-    //Quantifier(const Quantifier &q);
+    Quantifier(const Quantifier &q);
     QString quantName() const;
     void setQuantName(const QString &name);
     QList<double> values() const;
@@ -35,5 +36,7 @@ private:
     Range mRange;
     QString mTypeName;
 };
+
+Q_DECLARE_METATYPE(Quantifier)
 
 #endif // QUANTIFIER_H

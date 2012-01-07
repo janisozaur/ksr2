@@ -1,9 +1,6 @@
 #include "Quantifier.h"
 
-#include <QMetaType>
 #include <QStringList>
-
-Q_DECLARE_METATYPE(Quantifier *)
 
 Quantifier::Quantifier(QObject *parent) :
     QObject(parent)
@@ -19,14 +16,14 @@ Quantifier::Quantifier(const QString &name, const QList<double> &values, const R
 {
 }
 
-/*Quantifier::Quantifier(const Quantifier &q) :
+Quantifier::Quantifier(const Quantifier &q) :
     QObject(q.parent()),
     mName(q.quantName()),
     mValues(q.values()),
     mRange(q.range()),
     mTypeName(q.typeName())
 {
-}*/
+}
 
 QString Quantifier::quantName() const
 {
