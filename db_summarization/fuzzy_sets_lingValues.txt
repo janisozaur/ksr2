@@ -1,2 +1,34 @@
 niskie opady:19:TRAPEZOID:0:0:20:50
-niska temperatura:4:TRAPEZOID:-30:-30:0:10
+#œrednie opady:19:TRIANGLE:20:200:400
+wysokie opady:19:TRAPEZOID:200:400:600:600
+
+niska temperatura na zewn¹trz:4:TRAPEZOID:-30:-30:0:10
+#œrednia temperatura na zewn¹trz:4:TRIANGLE:5:15:25
+wysoka temperatura na zewn¹trz:4:TRAPEZOID:15:25:40:40
+
+#niska temperatura odczuwalna:14:TRAPEZOID:-30:-30:0:10
+#wysoka temperatura zewn¹trz:14:TRAPEZOID:15:25:40:40
+
+zachodni kierunek wiatru:10:DISCRETE:W:1:WNW:0.75:WSW:0.75:NW:0.5:SW:0.5:SSE:0.25:SSW:0.25
+wschodni kierunek wiatru:10:DISCRETE:E:1:ENE:0.75:ESE:0.75:NE:0.5:SE:0.5:NNE:0.25:SSE:0.25
+pó³nocny kierunek wiatru:10:DISCRETE:N:1:NNE:0.75:NNW:0.75:NE:0.5:NW:0.5:WNW:0.25:ENE:0.25
+po³udniowy kierunek wiatru:10:DISCRETE:S:1:SSE:0.75:SSW:0.75:SE:0.5:SW:0.5:WSW:0.25:ESE:0.25
+
+ma³a prêdkoœæ wiatru:9:TRIANGLE:0:0:15
+du¿a prêdkoœæ wiatru:9:TRAPEZOID:10:20:60:60
+
+niska temperatura wewn¹trz:22:TRAPEZOID:0:0:5:20
+#œrednia temperatura wewn¹trz:22:TRIANGLE:10:20:25
+wysoka temperatura wewn¹trz:22:TRAPEZOID:20:30:50:50
+
+niskie ciœnienie:17:TRAPEZOID:970:970:980:1010
+wysokie ciœnienie:17:TRAPEZOID:1000:1030:1050:1050
+
+niska wilgotnoœæ powietrza na zewn¹trz:7:TRAPEZOID:0:0:10:40
+wysoka wilgotnoœæ powietrza na zewn¹trz:7:TRAPEZOID:50:90:100:100
+
+niska wilgotnoœæ powietrza wewn¹trz:23:TRAPEZOID:0:0:10:40
+wysoka wilgotnoœæ powietrza wewn¹trz:23:TRAPEZOID:50:90:100:100
+
+miesi¹c z pocz¹tku roku:1:TRIANGLE:1:1:7
+miesi¹c z koñca roku:1:TRIANGLE:5:12:12

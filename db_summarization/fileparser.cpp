@@ -22,7 +22,7 @@ QList<Quantifier> FileParser::parseQuantifiers(QString filePath){
     QTextStream in(&file);
     while (!in.atEnd()) {
         QString line = in.readLine();
-        if(!line.startsWith("#")){
+        if(!line.isEmpty() && !line.startsWith("#")){
             QStringList stringList = line.split(":");
 
             Quantifier quantifier = Quantifier();
@@ -59,7 +59,7 @@ QMap<int, QList<const LinguisticValue *> > FileParser::parseLinguisticValues(QSt
     QTextStream in(&file);
     while (!in.atEnd()) {
         QString line = in.readLine();
-        if(!line.startsWith("#")){
+        if(!line.isEmpty() && !line.startsWith("#")){
             QStringList stringList = line.split(":");
 
             LinguisticValue *linguisticValue = new LinguisticValue();
