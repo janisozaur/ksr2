@@ -16,9 +16,9 @@ TEMPLATE = app
 
 INCLUDEPATH += ../qjson/include/
 
-LIBS += -L../qjson/lib -lqjson
+LIBS += -L../qjson/lib -lqjson -lgomp
 
-QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -std=c++0x -fopenmp -O3 -mtune=native -march=native
 
 SOURCES += main.cpp \
 	trianglefunction.cpp \
