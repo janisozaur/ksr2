@@ -1,19 +1,18 @@
 #include "Quantifier.h"
 
-#include <QMetaType>
-
-Q_DECLARE_METATYPE(Quantifier *)
+#include <QStringList>
 
 Quantifier::Quantifier(QObject *parent) :
     QObject(parent)
 {
 }
 
-Quantifier::Quantifier(const QString &name, const QList<double> &values, const Range &_range, QObject *parent) :
+Quantifier::Quantifier(const QString &name, const QList<double> &values, const Range &_range, const QString &type, QObject *parent) :
     QObject(parent),
     mName(name),
     mValues(values),
-    mRange(_range)
+    mRange(_range),
+    mTypeName(type)
 {
 }
 
@@ -21,7 +20,8 @@ Quantifier::Quantifier(const Quantifier &q) :
     QObject(q.parent()),
     mName(q.quantName()),
     mValues(q.values()),
-    mRange(q.range())
+    mRange(q.range()),
+    mTypeName(q.typeName())
 {
 }
 
@@ -53,4 +53,26 @@ Range Quantifier::range() const
 void Quantifier::setRange(const Range &range)
 {
     mRange = range;
+}
+
+QString Quantifier::typeName() const
+{
+    return mTypeName;
+}
+
+void Quantifier::setTypeName(const QString &name)
+{
+    mTypeName = name;
+}
+
+QTextStream& operator<<(QTextStream &qs, const Quantifier &obj)
+{
+    QStringList ql;
+    for (int i = 0; i < obj.mValues.size(); i++) {
+        ql << QString::number(obj.mValues.at(i));
+    }
+    qs << obj.quantName() << ":"
+       << (obj.range() == Absolute ? "ABSOLUTE" : "RELATIVE") << ":"
+       << obj.mTypeName << ":" << ql.join(":");
+    return qs;
 }
