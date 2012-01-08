@@ -1,0 +1,1255 @@
+\documentclass{classrep}
+\usepackage[utf8]{inputenc}
+\usepackage{color}
+\usepackage{ltablex}
+\usepackage{makebox}
+\usepackage{amsmath}
+\usepackage{hyperref}
+
+\studycycle{Informatyka, studia dzienne, II st.}
+\coursesemester{II}
+
+\coursename{Komputerowe systemy rozpoznawania}
+\courseyear{2011/2012}
+
+\courseteacher{dr inż. Arkadiusz Tomczyk}
+\coursegroup{poniedziałek, 10:15}
+
+\author{
+  \studentinfo{Michał Janiszewski}{169485} \and
+  \studentinfo{Mariusz Łucka}{169493}
+}
+
+\title{Zadanie Numer 2: Lingwistyczne podsumowania baz danych}
+
+\begin{document}
+\maketitle
+
+\section{Cel}
+Celem zadania było napisanie aplikacji generującej podsumowania lingwistyczne wybranej bazy danych i przedstawiającej użytkownikowi najlepsze wyniki według zastosowanych miar.
+
+Użytkownik powinien mieć możliwość definiowania kwantyfikatorów, sumaryzatorów i kwalifikatorów oraz możliwość wyboru podsumowywanych atrybutów oraz miar wykorzystywanych do obliczenia jakości podsumowania.
+
+\paragraph{}
+Realizacja zadania składała się z 3 etapów:  
+\begin{enumerate}
+\item Wybór bazy danych lub wygenerowanie z niej widoku posiadającego przynajmniej 10 tysięcy rekordów oraz co najmniej 10 atrybutów dających się podsumować.
+
+\item Implementacja biblioteki obiektowej zawierającej zbiór klas reprezentujących różne rodzaje zbiorów rozmytych typu 1 i 2 i operacji na tych zbiorach. 
+
+\item Generowanie podsumowań dla różnych kwantyfikatorów, kwalifikatorów i sumaryzatorów.
+\end{enumerate}
+
+
+\section{Wprowadzenie}
+Poniższy rozdział zawiera wyjaśnienie zagadnień teoretycznych i podstawowych pojęć związanych z wykonywanym zadaniem.
+
+\subsection{Zbiory rozmyte}
+Zbiorem rozmytym (ang. \textit{fuzzy set}) $A$ w przestrzeni rozważań $X$ nazywamy zbiór uporządkowanych par postaci:
+\begin{equation}
+A=\{<x, \mu_A(x)>:x \in X \}
+\end{equation}
+gdzie $\mu_A:X \rightarrow [0,1] $ jest \textit{funkcją przynależności} , a jej wartość dla elementu $x \in X$ jest \textit{stopniem przynależności} $x$ do zbioru $A$.
+\paragraph{}
+Uogólnieniem zbiorów rozmytych są zbiory rozmyte typu 2, których podstawą jest rozszerzenie funkcji przynależności o wartościach rzeczywistych do funkcji przynależności typu 2. Przypisuje ona każdemu elementowi z przestrzeni rozważań $X$ zbiór rozmyty typu 1.
+
+Zbiór rozmyty typu 2 jest zdefiniowany następująco:
+\begin{equation}
+\tilde{A}=\{<x, \mu_{\tilde{A}}(x)>:x \in X \}
+\end{equation}
+gdzie $\mu_{\tilde{A}}:X \rightarrow F[0,1] $ i $F[0,1]$ jest zbiorem wszystkich zbiorów rozmytych typu 1.
+
+\subsection{Normy trójkątne}
+Normy trójkątne są uogólnieniem operacji mnożenia i iloczynu zbirów rozmytych. Wyróżniamy 2 rodzaje norm trójkątnych:
+
+\begin{enumerate}
+\item t-norma - funkcja 2 zmiennych jest t-normą jeżeli jest:
+\begin{itemize}
+\item przemienna,
+\item łączna,
+\item monotoniczna,
+\item istnieje element neutralny 1;
+\end{itemize}
+\item s-norma (t-conorma) - funkcja 2 zmiennych jest s-normą jeżeli jest:
+\begin{itemize}
+\item przemienna,
+\item łączna,
+\item monotoniczna,
+\item istnieje element neutralny 1;
+\end{itemize}
+\end{enumerate}
+
+\subsection{Podstawowe operacje na zbiorach rozmytych}
+Dopełnieniem $A^C$ zbioru rozmytego $A$ nazywamy zbiór rozmyty o funkcji przynależności:
+\begin{equation}
+\mu_{A^C}(x)=1-\mu_A(x)
+\end{equation}
+
+Sumą zbiorów $A \cup B$ rozmytych nazywamy zbiór rozmyty o funkcji przynależności:
+\begin{equation}
+\mu_{A \cup B}(x)=\mu_A(x)s\mu_A(x)
+\end{equation}
+gdzie $s$ jest dowolną s-normą np. operacją maksimum.
+\\
+
+Iloczynem zbiorów $A \cap B$ rozmytych nazywamy zbiór rozmyty o funkcji przynależności:
+\begin{equation}
+\mu_{A \cap B}(x)=\mu_A(x)t\mu_A(x)
+\end{equation}
+gdzie $t$ jest dowolną t-normą np. operacją minimum.
+\\
+
+Dopełnieniem $\tilde{A}^C$ zbioru rozmytego typu 2 $\tilde{A}$ nazywamy zbiór rozmyty typu 2 o funkcji przynależności:
+\begin{equation}
+\mu_{\tilde{A}^C}(x)=\int_{\mu_{\tilde{A}} \in J_x} \mu_x(\mu_{\tilde{A}})/(1-\mu_{\tilde{A}})
+ \end{equation}
+gdzie $\mu_{\tilde{A}^C}$ jest pierwszorzędnym stopniem przynależności elementu $x$ do zbioru $\tilde{A}$, a $\mu_x(\mu_{\tilde{A}})$ jest drugorzędnym stopniem przynależności.
+\\
+
+Suma $\tilde{A} \cup \tilde{B}$ zbiorów rozmytych typu 2 jest zdefiniowana w warunkach operacji złączenia i jest opisana funkcją przynależności:
+\begin{equation}
+\mu_{\tilde{A} \cup \tilde{B}}(x) = \mu_{\tilde{A}} \sqcup \mu_{\tilde{A}} = \int_{\mu_{\tilde{A}}}\int_{\mu_{\tilde{B}}}(\mu_x(\mu_{\tilde{A}}) t_1 \mu_x(\mu_{\tilde{B}}))/(\mu_{\tilde{A}} s \mu_{\tilde{B}})
+\end{equation}
+a iloczyn $\tilde{A} \cap \tilde{B}$ jest zdefiniowany w warunkach operacji spotkania i opisany funkcją przynależności:
+\begin{equation}
+\mu_{\tilde{A} \cap \tilde{B}}(x) = \mu_{\tilde{A}} \sqcap \mu_{\tilde{A}} = \int_{\mu_{\tilde{A}}}\int_{\mu_{\tilde{B}}}(\mu_x(\mu_{\tilde{A}}) t_1 \mu_x(\mu_{\tilde{B}}))/(\mu_{\tilde{A}} t_2 \mu_{\tilde{B}})
+\end{equation}
+gdzie $s$ jest dowolną s-normą, a $t_1$ i $t_2$ są dowolnymi t-normami
+
+\subsection{Miary zbiorów rozmytych}
+\subsubsection{Kardynalność}
+Kardynalność jest podstawową miarą zbiorów rozmytych.
+
+Dla policzalnego zbioru rozmytego A jest to suma stopni przynależności wszystkich elementów z przestrzeni rozważań:
+\begin{equation}
+|A|=\sum_{x \in X} \mu_A(x)
+\end{equation}
+
+Dla zbioru niepoliczalnego jest to całka:
+\begin{equation}
+|A|=clm(A)=\int_{x \in X} \mu_A(x)\,dx
+\end{equation}
+\\
+
+W przypadku zbiorów rozmytych typu 2 wzory na kardynalności przedstawiają się następująco:
+\\
+dla zbioru policzalnego:
+\begin{equation}
+|\tilde{A}|=\sum_{x \in X} sup\{u \in J_x:\mu_x(u)=1\}
+\end{equation}
+i niepoliczalnego:
+\begin{equation}
+|\tilde{A}|=\int_{x \in X} sup\{u \in J_x:\mu_x(u)=1\}\,dx
+\end{equation}
+
+\subsubsection{Nośnik}
+Nośnikiem $supp(A)$ zbioru rozmytego A jest zbiór klasyczny zawierający  
+\\
+
+Dla zbioru rozmytego typu 2 nośnikiem jest zbiór rozmyty typu 1, który zawiera elementy z przestrzeni rozważań $X$ z przypisanymi pierwszorzędnymi funkcjami przynależności, dla których drugorzędne funkcje przynależności są największe.
+
+\subsubsection{Stopień rozmycia}
+Stopień rozmycia $in(A)$ zbioru rozmytego A jest określany jako:
+\begin{equation}
+in(A)=\frac{|supp(A)|}{|X|}
+\end{equation}
+Im większa jest ta miara, tym zbiór jest bardziej nieprecyzyjny.
+
+\subsection{Lingwistyczne podsumowania baz danych}
+\subsubsection{Zmienna lingwistyczna}
+Zmienna lingwistyczna $L$ to piątka $<\alpha, H, X, G, K>$, gdzie:
+\begin{itemize}
+\item $\alpha$ - nazwa zmiennej lingwistycznej
+\item $H$ - zbiór wartości lingwistycznych, które należy podać żeby zdefiniować zmienną lingwistyczną - wartości te nazywamy etykietami
+\item $X$ - przestrzeń rozważań zbiorów rozmytych, które będą skojarzone z etykietami w zbiorze $H$
+\item $G$ - reguła gramatyczna, która pozwala generować etykiety. Najprostszym sposobem jest tutaj wymienienie etykiet
+\item $K$ - reguła semantyczna (znaczeniowa) - mówi o tym, że dana etykietę można powiązać z danym zbiorem rozmytym
+\end{itemize}
+
+\subsubsection{Podsumowania lingwistyczne według Yagera}
+Yager zaproponował podsumowania lingwistyczne następującej postaci:
+\begin{itemize}
+\item w formie pierwszej: QP jest/ma S [T]
+\item w formie drugiej: QP będących/mających W jest/ma S [T]
+\end{itemize}
+gdzie:
+\begin{itemize}
+\item P - jest podmiotem podsumowania, czyli obiektem reprezentującym rekord w bazie danych
+\item Q - jest to tzw. kwantyfikator i odnosi się do ilości rekordów, których dotyczy podsumowanie. Z kwantyfikatorem jest związana pewna wartość zmiennej lingwistycznej opisana za pomocą zbioru rozmytego. Jeżeli elementy tego zbioru mają wartości z przedziału [0,1] to kwantyfikator nazywamy względnym (relatywnym), a w przeciwnym wypadku bezwzględnym (absolutnym).
+\item S i W nazywamy odpowiednio sumaryzatorem i kwalifikatorem. Są one powiązane z wartościami zmiennych lingwistycznych opisujących poszczególne kolumny bazy danych. Kwalifikator i sumaryzator mogą być również złożone z wielu wartości zmiennych lingwistycznych, wtedy są opisane za pomocą iloczynu zbiorów rozmytych związanych z poszczególnymi zmiennymi lingwistycznymi.
+\item T - jest miarą prawdziwości podsumowania omówioną w kolejnej sekcji.
+\end{itemize}
+
+\paragraph{}
+Podsumowania lingwistyczne pozwalają wygenerować za pomocą komputera opis zawartych w bazie danych informacji i przedstawić go w języku naturalnym. Należy jednak najpierw samodzielnie zdefiniować zmienne lingwistyczne i zbiory rozmyte odpowiadające poszczególnym kolumnom w bazie. 
+
+\subsection{Miary jakości podsumowań lingwistycznych}
+Miary jakości pozwalają z wszystkich wygenerowanych podsumowań wybrać te, które najlepiej opisują dane zawarte w bazie.
+
+Można wyróżnić między innymi miary opisane poniżej.
+\subsubsection{Stopień prawdziwości}
+W przypadku kwantyfikatora względnego:
+\begin{equation}
+T_1 =\mu_Q(\frac{r}{m})
+\end{equation}
+W przypadku kwantyfikatora absolutnego:
+\begin{equation}
+T_1 =\mu_Q(r)
+\end{equation}
+
+Dla podsumowań w formie pierwszej:
+$$r=\sum_{i=1}^m \mu_s(d_i)$$
+Dla podsumowań w formie drugiej:
+$$r=\frac{\sum_{i=1}^m \mu_s(d_i) \wedge \sum_{i=1}^m \mu_w(d_i)}{\sum_i=1^m \mu_s(d_i)}$$
+gdzie:
+$\mu_Q, \mu_W, \mu_S$ to funkcje przynależności odpowiednio: kwantyfikatora, kwalifikatora i sumaryzatora, a $d_i$ to i-ty rekord w bazie danych. 
+
+\subsubsection{Stopień nieprecyzyjności}
+\begin{equation}
+T_2=(\prod_{j=1}^n in(S_j))^{\frac{1}{n}}
+\end{equation}
+gdzie $S_j$ jest j-tym sumaryzatorem wchodzącym w skład n-elementowego sumaryzatora złożonego.  
+
+\subsubsection{Stopień pokrycia}
+\begin{equation}
+T_3=\frac{\sum_{i=1}^m t_i}{\sum_{i=1}^m h_i}
+\end{equation}
+gdzie:\\
+\begin{equation}
+t_i = \left\{
+\begin{tabular}{l l}
+1 & \quad \mbox{jeżeli $\mu_s(d_i) > 0$ i $\mu_s(d_i) > 0$}\\
+ 0 & \quad \mbox{w przeciwnym wypadku}\\ 
+\end{tabular} \right .
+\end{equation}
+
+\begin{equation}
+h_i = \left\{
+\begin{tabular}{l l}
+1 & \quad \mbox{jeżeli $\mu_s(d_i) > 0$}\\
+ 0 & \quad \mbox{w przeciwnym wypadku}\\ 
+\end{tabular} \right .
+\end{equation}
+
+\subsubsection{Miara trafności}
+
+
+\begin{equation}
+T_4=|\prod_{j=1}^n r_j -T_3|
+\end{equation}
+
+\begin{equation}
+r_j=\frac{\sum_{i=1}^m g_{ij}}{m}
+\end{equation}
+
+\begin{equation}
+g_{ij} = \left\{
+\begin{tabular}{l l}
+1 & \quad \mbox{jeżeli $\mu_{s_j}(d_i) > 0$}\\
+ 0 & \quad \mbox{w przeciwnym wypadku}\\ 
+\end{tabular} \right .
+\end{equation}
+gdzie $i$ jest indeksem rekordu w m-elementowej bazie, a $j$ jest indeksem sumaryzatora wchodzącego w skład n-elementowego sumaryzatora złożonego.
+
+\subsubsection{Długość podsumowania}
+\begin{equation}
+T_5=2 \cdot (\frac{1}{2})^{|S|}
+\end{equation}
+
+gdzie $|S|$ jest liczbą sumaryzatorów wchodzących w skład sumaryzatora złożonego.
+
+\subsubsection{Stopień nieprecyzyjności kwantyfikatora}
+\begin{equation}
+T_6=1-in(Q)
+\end{equation}
+
+\subsubsection{Stopień kardynalności kwantyfikatora}
+\begin{equation}
+T_7=1-(\frac{|Q|}{|X_Q|})
+\end{equation}
+gdzie $X_Q$ to przestrzeń rozważań kwantyfikatora $Q$.
+
+\subsubsection{Stopień kardynalności sumaryzatora}
+\begin{equation}
+T_8=1-|\prod_{j=1}^n\frac{|S_j|}{X_j}|^{\frac{1}{n}}
+\end{equation}
+gdzie $X_j$ jest przestrzenią rozważań sumaryzatora $S_j$ wchodzącego w skład n-elementowego sumaryzatora złożonego.
+
+\subsubsection{Stopień nieprecyzyjności kwalifikatora}
+\begin{equation}
+T_9=(\prod_{j=1}^x in(W_j))^{\frac{1}{x}}
+\end{equation}
+gdzie $W_j$ jest j-tym kwalifikatorem wchodzącym w skład x-elementowego kwalifikatora złożonego.  
+
+\subsubsection{Stopień kardynalności kwalifikatora}
+\begin{equation}
+T_8=1-|\prod_{j=1}^n\frac{|S_j|}{X_j}|^{\frac{1}{n}}
+\end{equation}
+gdzie $X_{W_j}$ jest przestrzenią rozważań kwalifikatora $W_j$ wchodzącego w skład x-elementowego kwalifikatora złożonego.
+
+\subsubsection{Długość kwalifikatora}
+\begin{equation}
+T_11=2 \cdot (\frac{1}{2})^{|W|}
+\end{equation}
+gdzie $|W|$ jest liczbą kwalifikatorów wchodzących w skład kwalifikatora złożonego.
+
+\subsubsection{Miara optymalna}
+Optymalną miarę podsumowania możemy policzyć jako średnią ważoną wyżej wymienionych miar. Najczęściej stosuje się równe wagi dla wszystkich miar, czyli otrzymujemy wtedy średnią arytmetyczną.
+
+\section{Opis implementacji}
+{\color{blue} 
+Aplikacja została podzielona na cztery główne moduły:
+\begin{itemize}
+ \item \verb|sgmlExtractor| \ppauza prosta aplikacja służąca do ekstrakcji danych z plików formatu \verb|SGML| na prostszy w obsłudze format,
+ \item \verb|keywordSelector| \ppauza aplikacja służąca do wyboru słów kluczowych dla zadanego tekstu,
+ \item \verb|stemmer| \ppauza aplikacja dokonująca rdzeniowanie tekstu,
+ \item \verb|classifier| \ppauza główna aplikacja zadania, która dokonuje ekstrakcji wektorów cech oraz klasyfikacji danych wejściowych.
+\end{itemize}
+Z wyjątkiem aplikacji \verb|stemmer|, wszystkie opisane powyżej aplikacje wykonane zostały przy użyciu frameworka \verb|Qt|, w języku \verb|C++|.
+
+Wyekstrahowane wektory cech są zapisywany oraz później odczytywane z pliku o następującym formacie:
+\begin{verbatim}
+ etykieta1
+ [x1_1;x1_2;...;x1_n]  //wektor cech
+ etykieta2
+ [x2_1;x2_2;...;x2_n]
+ ...
+\end{verbatim}
+W ten sposób została uzyskana niezależność klasyfikacji od rodzaju danych wejściowych.
+
+
+\subsection{sgmlExtractor}
+Aplikacja ta przekształca dane z pliku o strukturze \verb|SGML| do pliku o następującym formacie:
+\begin{verbatim}
+ etykieta1
+ tekst1
+ etykieta2
+ tekst2
+ ...
+\end{verbatim}
+Pozwala to na szybkie wczytanie danych, a także na ich łatwą interpretację przez człowieka \ppauza dane można edytować bez większych obaw o ,,zepsucie'' formatu pliku.
+
+Aplikacja ta zawiera klasę \verb|SgmlReader|, która w metodzie \verb|readDirectory| przeszukuje żądany katalog w poszukiwaniu plików w formacie \verb|SGML|, a jeśli takie występują, to sprawdza zawarte w nich informacje pod kątem ustawionych wcześniej cech.
+
+Zapis do nowego formatu wykonuje klasa \verb|ArticleWriter|.
+
+\subsection{keywordSelector}
+Aplikacja implementuje dwie metody wyboru słów kluczowych: \textit{gęstości informacji} oraz \textit{mutual information}, implementowane odpowiednio przez klasy   \verb|DiscriminatingExtractor| oraz \verb|MIExtractor|.
+
+Obie metody odziedziczają interfejs \verb|KeywordExtractorInterface|, dzięki czemu możliwy jest dogodny wybór sposobu ekstrakcji słów kluczowych.
+
+\subsection{stemmer}
+Aplikacja została napisana w języku Java i wykorzystuje bibliotekę JWNL do połączenie ze słownikiem WordNet. Obsługa WordNeta jest realizowana w klasie \verb|WordNetStemmer|
+ 
+WordNet jest słownikiem zawierającym bazę słów w języku angielskim razem z relacjami semantycznymi i leksykalnymi pomiędzy nimi. Umożliwia on m.in. rdzeniowanie (ang. \textit{stemming}) wyrazów, czyli otrzymanie formy podstawowej słowa. Dzięki zamianie wyrazów na ich formy podstawowe, odmiany tego samego słowa nie są rozróżniane, co ułatwia klasyfikację.
+
+\subsection{classifier}
+Aplikacja ta może działać w trzech trybach: klasyfikowania za pomocą metody $k$-NN, badania podobieństwa tekstów oraz ekstrakcji cech.
+
+\subsubsection{Metoda $k$-NN}
+\label{sec:impl_knn}
+W trybie tym, zaraz po utworzeniu strumienia wyjściowego, sterowanie przekazywane jest do klasy \verb|Knn|, która inicjuje wybraną metrykę korzystając z fabryki \verb|MetricFactory|, a następnie za jej pomocą ładuje dane (które mogą być specyficzne dla żądanej metryki), po czym tworzy wątki \verb|KnnThread|, które dokonują obliczeń i wyznaczają odległości pomiędzy poszczególnymi obiektami zbiorów testowego i treningowego. Klasa \verb|Knn| konsoliduje wyniki i zapisuje je.
+
+\subsubsection{Badanie podobieństwa tekstów}
+Po wczytaniu artykułów za pomocą klasy \verb|ArticleLoader| następuje wyznaczenie wymaganych zbiorów słów, po czym podobnie jak w sekcji \ref{sec:impl_knn} sterowanie przekazywane jest do klasy \verb|Knn| z tą różnicą, że praca w tym przypadku wykonywana jest przez wątki klasy \verb|KnnSimiliarityThread|.
+
+\subsubsection{Ekstrakcja cech}
+Po wczytaniu artykułów za pomocą klasy \verb|ArticleLoader| wybierane są słowa, względem których liczone mają być wagi. Po zainicjowaniu wszystkich potrzebnych danych klasa \verb|Tfidf| wykonuje algorytm o tej samej nazwie.
+}
+\section{Materiały i metody}
+{\color{blue} 
+Badania zostały przeprowadzone na dwóch zbiorach dokumentów tekstowych:\\
+\begin{enumerate}
+\item Zbiór dokumentów Reuters dostępny pod adresem:\\ \url{http://archive.ics.uci.edu/ml/datasets/Reuters-21578+Text+Categorization+Collection}\\\\
+Dla tego zbioru testy były przeprowadzone w dwóch kategoriach:
+
+\begin{itemize}
+\item \textit{places} (etykiety: \textit{west-germany}, \textit{usa}, \textit{uk}, \textit{france}, \textit{canda}, \textit{japan}),
+\item \textit{topics} (etykiety: \textit{coffee}, \textit{gold}, \textit{ship}, \textit{sugar}).\\
+\end{itemize}
+Wykorzystane zostały tylko artykuły, które w danej kategorii posiadają dokładnie jedną z wymienionych etykiet.\\
+
+
+\item Zbiór wybranych na potrzeby tego zadania 100 krótkich opisów potraw ze strony \url{http://allrecipes.com}, z etykietami: \textit{cake} i \textit{pasta} (50 opisów dla każdej kategorii).
+
+\end{enumerate}
+
+\paragraph{}
+We wszystkich badaniach zbiór danych został podzielony na 60\% danych uczących i 40\% danych testowych.
+\paragraph{}
+W każdym zbiorze tekstów zostały wyodrębnione wektory cech dla poszczególnych dokumentów metodami opisanymi w rozdziale 2, a następnie dokonano klasyfikacji za pomocą algorytmu k-NN dla $k$ z zakresu 1-100. W przypadku metody ekstrakcji opartej na liczbie wystąpień słów, jako słowa kluczowe wybrano te z zakresu 90-99\% najczęściej występujących, co dawało optymalne rezultaty.
+Do badania odległości wektorów wykorzystano opisane wcześniej metryki: euklidesową, uliczną i Czebyszewa. Dla metryki euklidesowej i Czebyszewa została zastosowana normalizacja wektorów, ponieważ znacznie poprawiło to osiągane wyniki.\\
+Również dla każdego zestawu tekstów policzono wartości podobieństwa ze tekstów zbioru treningowego do tekstów ze zbioru uczącego i dokonano klasyfikacji za pomocą k-NN.
+
+Dodatkowo w celu poprawy otrzymywanych wyników została zastosowana zmodyfikowana przez nas metoda Jaccarda do określania podobieństwa tekstów: $$sim(d_1, d_2) = \sqrt{J(A ,B)*J(C, D)}$$\\
+gdzie:\\
+$A$ i $B$ to zbiory słów w dokumentach $d_1$ i $d_2$,\\
+$C$ i $D$ to zbiory n-gramów 4-elementowych w dokumentach $d_1$ i $d_2$.
+}
+
+\section{Wyniki}
+{\color{blue} 
+Poniższe tabele przedstawiają otrzymane podczas badań wyniki:
+
+%tabela 1
+
+\begingroup
+{\scriptsize  
+\setlength{\LTleft}{-20cm plus -1fill}
+\setlength{\LTright}{\LTleft}
+
+\begin{longtable}{|p{1cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{1.1cm}|}
+\caption{ Procent poprawnych wyników dla metody ekstrakcji opartej na liczbie wystąpień słów i dla metryki euklidesowej.}\\ 
+\hline
+
+Zbiór
+dokumentów
+
+ &\multicolumn{15}{c|}{Parametr k}\\
+\cline{2-16}
+& 1
+& 2
+& 3
+& 4
+& 5
+& 6
+& 7
+& 8
+& 9
+& 10
+& 20
+& 40
+& 60
+& 100
+& Najlepszy wynik
+\\ \hline\hline
+Reuters
+- places
+& 87.86\%	%1
+& 85.03\%	%2
+& 89.56\%	%3
+& 88.91\%	%4
+& 89.87\%	%5
+& 90.04\%	%6
+& 90.41\%	%7
+& 90.17\%	%8
+& 90.50\%	%9
+& 90.17\%	%10
+& 89.36\%	%20
+& 88.64\%	%30
+& 88.05\%	%60
+& 86.86\%	%100
+& 90.17\% (k=8,10)
+\\ \hline
+Reuters
+- topics
+& 91.26\%	%1
+& 86.41\%	%2
+& 90.29\%	%3
+& 88.35\%	%4
+& 91.26\%	%5
+& 91.75\%	%6
+& 93.20\%	%7
+& 92.72\%	%8
+& 93.20\%	%9
+& 92.23\%	%10
+& 92.23\%	%20
+& 91.26\%	%40
+& 91.75\%	%60
+& 92.72\%	%100
+& 93.20\% (k=7,9)
+\\ \hline
+Przepisy
+- kulinarne 
+& 77.5\%	%1
+& 80\%		%2
+& 80\%		%3
+& 77.5\%	%4
+& 77.5\%	%5
+& 80\%		%6
+& 75\%		%7
+& 77.5\%	%8
+& 77.5\%	%9
+& 80\%		%10
+& 90\%		%20
+& 77.5\%	%40
+& ---		%60
+& ---		%100
+& 90\% (k=20)
+\\ \hline
+\end{longtable}
+}
+\endgroup
+
+
+%tabela 2
+
+\begingroup
+{\scriptsize  
+\setlength{\LTleft}{-20cm plus -1fill}
+\setlength{\LTright}{\LTleft}
+
+\begin{longtable}{|p{1cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{1.1cm}|}
+\caption{ Procent poprawnych wyników dla metody ekstrakcji opartej na liczbie wystąpień słów i dla metryki ulicznej.}\\ 
+\hline
+
+Zbiór
+dokumentów
+
+ &\multicolumn{15}{c|}{Parametr k}\\
+\cline{2-16}
+& 1
+& 2
+& 3
+& 4
+& 5
+& 6
+& 7
+& 8
+& 9
+& 10
+& 20
+& 40
+& 60
+& 100
+& Najlepszy wynik
+\\ \hline\hline
+Reuters
+- places
+& 85.64\%	%1
+& 71.25\%	%2
+& 85.48\%	%3
+& 74.63\%	%4
+& 85.33\%	%5
+& 84.52\%	%6
+& 84.83\%	%7
+& 84.29\%	%8
+& 84.31\%	%9
+& 83.92\%	%10
+& 82.65\%	%20
+& 81.26\%	%40
+& 81.25\%	%60
+& 81.23\%	%100
+& 85.64\% (k=1)
+\\ \hline
+Reuters
+- topics
+& 91.26\%	%1
+& 88.35\%	%2
+& 89.81\%	%3
+& 91.26\%	%4
+& 91.26\%	%5
+& 92.72\%	%6
+& 91.75\%	%7
+& 92.23\%	%8
+& 91.75\%	%9
+& 91.75\%	%10
+& 91.75\%	%20
+& 90.78\%	%40
+& 89.32\%	%60
+& 88.34\%	%100
+& 92.72\%  (k=6)
+\\ \hline
+Przepisy
+- kulinarne 
+& 62.5\%	%1
+& 57.5\%	%2
+& 75\%		%3
+& 62.5\%	%4
+& 80\%		%5
+& 72.5\%	%6
+& 82.5\%	%7
+& 75\%		%8
+& 75\%		%9
+& 77.5\%	%10
+& 85\%		%20
+& 82.5\%	%40
+& ---		%60
+& ---		%100
+& 92.5\% (k=17)
+\\ \hline
+\end{longtable}
+}
+\endgroup
+
+
+
+%tabela 3
+
+\begingroup
+{\scriptsize  
+\setlength{\LTleft}{-20cm plus -1fill}
+\setlength{\LTright}{\LTleft}
+
+\begin{longtable}{|p{1cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{1.1cm}|}
+\caption{ Procent poprawnych wyników dla metody ekstrakcji opartej na liczbie wystąpień słów i dla metryki Czebyszewa.}\\ 
+\hline
+
+Zbiór
+dokumentów
+
+ &\multicolumn{15}{c|}{Parametr k}\\
+\cline{2-16}
+& 1
+& 2
+& 3
+& 4
+& 5
+& 6
+& 7
+& 8
+& 9
+& 10
+& 20
+& 40
+& 60
+& 100
+& Najlepszy wynik
+\\ \hline\hline
+Reuters
+- places
+& 79.23\%	%1
+& 72.71\%	%2
+& 81.58\%	%3
+& 81.67\%	%4
+& 83.46\%	%5
+& 83.70\%	%6
+& 84.40\%	%7
+& 84.29\%	%8
+& 84.42\%	%9
+& 84.52\%	%10
+& 84.16\%	%20
+& 83.09\%	%40
+& 82.13\%	%60
+& 81.41\%	%100
+& 84.59\% (k=11)
+\\ \hline
+Reuters
+- topics
+& 75.73\%	%1
+& 75.24\%	%2
+& 74.76\%	%3
+& 72.82\%	%4
+& 70.87\%	%5
+& 68.45\%	%6
+& 68.93\%	%7
+& 66.99\%	%8
+& 66.99\%	%9
+& 65.05\%	%10
+& 57.28\%	%20
+& 41.75\%	%40
+& 34.95\%	%60
+& 45.14\%	%100
+& 75.73\%	(k=1)
+\\ \hline
+Przepisy
+- kulinarne 
+& 67.5\%	%1
+& 72.5\%	%2
+& 65\%		%3
+& 75\%		%4
+& 62.5\%	%5
+& 67.5\%	%6
+& 70\%		%7
+& 72.5\%	%8
+& 65\%		%9
+& 72.5\%	%10
+& 60\%		%20
+& 52.5\%	%40
+& ---		%60
+& ---		%100
+& 75\% (k=4)
+\\ \hline
+\end{longtable}
+}
+\endgroup
+
+
+
+
+%tabela 4
+
+\begingroup
+{\scriptsize  
+\setlength{\LTleft}{-20cm plus -1fill}
+\setlength{\LTright}{\LTleft}
+
+\begin{longtable}{|p{1cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{1.1cm}|}
+\caption{ Procent poprawnych wyników dla metody gęstości informacji i metryki euklidesowej.}\\ 
+\hline
+
+Zbiór
+dokumentów
+
+ &\multicolumn{15}{c|}{Parametr k}\\
+\cline{2-16}
+& 1
+& 2
+& 3
+& 4
+& 5
+& 6
+& 7
+& 8
+& 9
+& 10
+& 20
+& 40
+& 60
+& 100
+& Najlepszy wynik
+\\ \hline\hline
+Reuters
+- places
+& 79.18\%	%1
+& 77.72\%	%2
+& 79.93\%	%3
+& 79.38\%	%4
+& 80.27\%	%5
+& 79.97\%	%6
+& 80.48\%	%7
+& 80.43\%	%8
+& 80.88\%	%9
+& 80.88\%	%10
+& 80.91\%	%20
+& 80.86\%	%40
+& 80.86\%	%60
+& 80.78\%	%100
+& 81.02\% (k=24)
+
+\\ \hline
+Reuters
+- topics
+& 77.72\%	%1
+& 77.45\%	%2
+& 76.52\%	%3
+& 73.52\%	%4
+& 70.91\%	%5
+& 69.55\%	%6
+& 69.01\%	%7
+& 67.12\%	%8
+& 66.56\%	%9
+& 66.32\%	%10
+& 60.36\%	%20
+& 40.65\%	%40
+& 38.45\%	%60
+& 47.32\%	%100
+& 77.72\%	(k=1)
+\\ \hline
+Przepisy
+- kulinarne 
+& 60\%		%1
+& 62.5\%	%2
+& 62.5\%	%3
+& 65\%		%4
+& 67.5\%	%5
+& 70\%		%6
+& 75\%		%7
+& 70\%		%8
+& 70\%		%9
+& 65\%		%10
+& 45\%		%20
+& 45\%		%40
+& ---		%60
+& ---		%100
+& 75\% (k=7)
+\\ \hline
+\end{longtable}
+}
+\endgroup
+
+
+
+%tabela 5
+
+\begingroup
+{\scriptsize  
+\setlength{\LTleft}{-20cm plus -1fill}
+\setlength{\LTright}{\LTleft}
+
+\clearpage
+
+\begin{longtable}{|p{1cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{1.1cm}|}
+\caption{ Procent poprawnych wyników dla pierwszej metody ekstrakcji i metryki ulicznej.}\\ 
+\hline
+
+Zbiór
+dokumentów
+
+ &\multicolumn{15}{c|}{Parametr k}\\
+\cline{2-16}
+& 1
+& 2
+& 3
+& 4
+& 5
+& 6
+& 7
+& 8
+& 9
+& 10
+& 20
+& 40
+& 60
+& 100
+& Najlepszy wynik
+\\ \hline\hline
+Reuters
+- places
+& 77.77\%	%1
+& 74.43\%	%2
+& 79.99\%	%3
+& 79.36\%	%4
+& 80.97\%	%5
+& 80.61\%	%6
+& 81.04\%	%7
+& 81.08\%	%8
+& 81.34\%	%9
+& 81.67\%	%10
+& 81.32\%	%20
+& 80.88\%	%40
+& 80.32\%	%60
+& 80.16\%	%100
+& 81.67\% (k=10)
+\\ \hline
+Reuters
+- topics
+& 77.03\%	%1
+& 77.42\%	%2
+& 75.37\%	%3
+& 74.52\%	%4
+& 72.42\%	%5
+& 70.54\%	%6
+& 69.99\%	%7
+& 68.13\%	%8
+& 64.69\%	%9
+& 65.01\%	%10
+& 60.45\%	%20
+& 43.88\%	%40
+& 35.56\%	%60
+& 47.64\%	%100
+& 77.42\%	(k=2)
+\\ \hline
+Przepisy
+- kulinarne 
+& 72.5\%	%1
+& 72.5\%	%2
+& 75\%		%3
+& 77.5\%	%4
+& 72.5\%	%5
+& 70\%		%6
+& 65\%		%7
+& 62.5\%	%8
+& 62.5\%	%9
+& 65\%		%10
+& 60\%		%20
+& 45\%		%40
+& ---		%60
+& ---		%100
+& 77.5\% (k=4)
+\\ \hline
+\end{longtable}
+}
+\endgroup
+
+
+
+%tabela 6
+
+\begingroup
+{\scriptsize  
+\setlength{\LTleft}{-20cm plus -1fill}
+\setlength{\LTright}{\LTleft}
+
+\begin{longtable}{|p{1cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{1.1cm}|}
+\caption{ Procent poprawnych wyników dla metody gęstości informacji i metryki Cebyszewa.}\\ 
+\hline
+
+Zbiór
+dokumentów
+
+ &\multicolumn{15}{c|}{Parametr k}\\
+\cline{2-16}
+& 1
+& 2
+& 3
+& 4
+& 5
+& 6
+& 7
+& 8
+& 9
+& 10
+& 20
+& 40
+& 60
+& 100
+& Najlepszy wynik
+\\ \hline\hline
+Reuters
+- places
+& 79.84\%	%1
+& 79.84\%	%2
+& 79.84\%	%3
+& 79.84\%	%4
+& 79.84\%	%5
+& 79.84\%	%6
+& 79.84\%	%7
+& 79.84\%	%8
+& 79.84\%	%9
+& 79.84\%	%10
+& 79.84\%	%20
+& 79.84\%	%40
+& 79.84\%	%60
+& 79.84\%	%100
+& 79.84\% (k=1-100)
+\\ \hline
+Reuters
+- topics
+& 60.32\%	%1
+& 60.32\%	%2
+& 60.32\%	%3
+& 60.32\%	%4
+& 60.32\%	%5
+& 60.32\%	%6
+& 60.32\%	%7
+& 60.32\%	%8
+& 60.32\%	%9
+& 60.32\%	%10
+& 60.32\%	%20
+& 60.32\%	%40
+& 60.32\%	%60
+& 60.32\%	%100
+& 60.32\% (k=1-100)
+\\ \hline
+Przepisy
+- kulinarne 
+& 60\%	%1
+& 60\%	%2
+& 60\%		%3
+& 60\%	%4
+& 60\%	%5
+& 60\%		%6
+& 60\%		%7
+& 60\%	%8
+& 60\%	%9
+& 60\%		%10
+& 60\%		%20
+& 60\%		%40
+& ---		%60
+& ---		%100
+& 60\% (k=1-100)
+\\ \hline
+\end{longtable}
+}
+\endgroup
+
+
+
+%tabela 7
+
+\begingroup
+{\scriptsize  
+\setlength{\LTleft}{-20cm plus -1fill}
+\setlength{\LTright}{\LTleft}
+
+\begin{longtable}{|p{1cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{1.1cm}|}
+\caption{ Procent poprawnych wyników dla podobieństwa tekstów za pomocą miary Jaccarda.}\\ 
+\hline
+
+Zbiór
+dokumentów
+
+ &\multicolumn{15}{c|}{Parametr k}\\
+\cline{2-16}
+& 1
+& 2
+& 3
+& 4
+& 5
+& 6
+& 7
+& 8
+& 9
+& 10
+& 20
+& 40
+& 60
+& 100
+& Najlepszy wynik
+\\ \hline\hline
+Reuters
+- places
+& 88.30\%	%1
+& 85.83\%	%2
+& 89.70\%	%3
+& 89.67\%	%4
+& 89.67\%	%5
+& 89.32\%	%6
+& 89.63\%	%7
+& 89.63\%	%8
+& 89.62\%	%9
+& 89.63\%	%10
+& 88.71\%	%20
+& 86.83\%	%40
+& 85.55\%	%60
+& 83.92\%	%100
+& 89.70\%	(k=3)
+\\ \hline
+Reuters
+- topics
+& 85.92\%	%1
+& 82.52\%	%2
+& 83.98\%	%3
+& 83.50\%	%4
+& 86.41\%	%5
+& 87.86\%	%6
+& 87.86\%	%7
+& 83.98\%	%8
+& 86.89\%	%9
+& 86.41\%	%10
+& 86.89\%	%20
+& 85.44\%	%40
+& 81.55\%	%60
+& 82.04\%	%100
+& 87.86\%	(k=6,7)
+\\ \hline
+Przepisy
+- kulinarne 
+& 85\%		%1
+& 80\%		%2
+& 85\%		%3
+& 82.5\%	%4
+& 85\%		%5
+& 82.5\%	%6
+& 87.5\%	%7
+& 82.5\%	%8
+& 90\%		%9
+& 82.5\%	%10
+& 85\%		%20
+& 87.5\%	%40
+& ---		%60
+& ---		%100
+& 90\% (k=9)
+\\ \hline
+\end{longtable}
+}
+\endgroup
+
+
+
+\clearpage
+%tabela 8
+
+\begingroup
+{\scriptsize  
+\setlength{\LTleft}{-20cm plus -1fill}
+\setlength{\LTright}{\LTleft}
+
+\begin{longtable}{|p{1cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{1.1cm}|}
+\caption{ Procent poprawnych wyników dla podobieństwa tekstów za pomocą n-gramów 4-elementowych.}\\ 
+\hline
+
+Zbiór
+dokumentów
+
+ &\multicolumn{15}{c|}{Parametr k}\\
+\cline{2-16}
+& 1
+& 2
+& 3
+& 4
+& 5
+& 6
+& 7
+& 8
+& 9
+& 10
+& 20
+& 40
+& 60
+& 100
+& Najlepszy wynik
+\\ \hline\hline
+Reuters
+- places
+& 78.38\%	%1
+& 75.96\%	%2
+& 79.73\%	%3
+& 79.36\%	%4
+& 80.11\%	%5
+& 80.14\%	%6
+& 80.49\%	%7
+& 80.34\%	%8
+& 80.49\%	%9
+& 80.38\%	%10
+& 80.43\%	%20
+& 80.24\%	%40
+& 80.21\%	%60
+& 80.24\%	%100
+& 80.54\%	(k=16)
+\\ \hline
+Reuters
+- topics
+& 60.19\%	%1
+& 57.77\%	%2
+& 63.59\%	%3
+& 61.17\%	%4
+& 61.17\%	%5
+& 59.71\%	%6
+& 61.17\%	%7
+& 59.71\%	%8
+& 61.66\%	%9
+& 61.66\%	%10
+& 66.50\%	%20
+& 71.36\%	%40
+& 70.87\%	%60
+& 74.27\%	%100
+& 75.72\%	(k=97)
+\\ \hline
+Przepisy
+- kulinarne 
+& 77.5\%	%1
+& 70\%		%2
+& 82.5\%	%3
+& 72.5\%	%4
+& 75\%		%5
+& 72.5\%	%6
+& 82.5\%	%7
+& 80\%		%8
+& 87.5\%	%9
+& 87.5\%	%10
+& 82.5\%	%20
+& 92.5\%	%40
+& ---		%60
+& ---		%100
+& 95\% (k=41)
+\\ \hline
+\end{longtable}
+}
+\endgroup
+
+
+
+%tabela 9
+
+\begingroup
+{\scriptsize  
+\setlength{\LTleft}{-20cm plus -1fill}
+\setlength{\LTright}{\LTleft}
+
+\begin{longtable}{|p{1cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{0.7cm}|p{1.1cm}|}
+\caption{ Procent poprawnych wyników dla podobieństwa tekstów za pomocą zmodyfikowanej miary Jaccarda.}\\ 
+\hline
+
+Zbiór
+dokumentów
+
+ &\multicolumn{15}{c|}{Parametr k}\\
+\cline{2-16}
+& 1
+& 2
+& 3
+& 4
+& 5
+& 6
+& 7
+& 8
+& 9
+& 10
+& 20
+& 40
+& 60
+& 100
+& Najlepszy wynik
+\\ \hline\hline
+Reuters
+- places
+& 88.54\%	%1
+& 85.64\%	%2
+& 89.39\%	%3
+& 89.49\%	%4
+& 90.23\%	%5
+& 89.89\%	%6
+& 89.78\%	%7
+& 89.87\%	%8
+& 89.63\%	%9
+& 89.65\%	%10
+& 88.34\%	%20
+& 86.66\%	%40
+& 85.35\%	%60
+& 83.70\%	%100
+
+& 90.23\%	(k=5)
+\\ \hline
+Reuters
+- topics
+& 83.98\%	%1
+& 82.52\%	%2
+& 84.46\%	%3
+& 86.41\%	%4
+& 84.95\%	%5
+& 88.35\%	%6
+& 87.38\%	%7
+& 85.44\%	%8
+& 85.92\%	%9
+& 85.44\%	%10
+& 81.55\%	%20
+& 80.10\%	%40
+& 81.07\%	%60
+& 81.07\%	%100
+
+& 88.35\%	(k=6)
+\\ \hline
+Przepisy
+- kulinarne 
+& 92.5\%	%1
+& 82.5\%	%2
+& 80\%		%3
+& 80\%		%4
+& 80\%		%5
+& 77.5\%	%6
+& 80\%		%7
+& 77.5\%	%8
+& 85\%		%9
+& 82.5\%	%10
+& 85\%		%20
+& 85\%		%40
+& ---		%60
+& ---		%100
+& 92.5\% (k=1,13)
+\\ \hline
+\end{longtable}
+}
+\endgroup
+
+}
+
+\section{Dyskusja}
+{\color{blue} 
+W metodzie $k$-NN metryka Czebyszewa daje najgorsze wyniki spośród badanych metryk, ponieważ jest bardzo wrażliwa na maksymalną różnicę współrzędnych i nawet jeżeli pozostałe współrzędne są podobne, to wektory są klasyfikowane jako odległe od siebie. Metryki euklidesowa i uliczna dają podobne, dobre rezultaty, chociaż metryka euklidesowa jest nieznacznie lepsza.
+
+Współczynnik Jaccarda dobrze sprawdza się jako miara podobieństwa tekstów. Metoda n-gramów jest skuteczna jedynie dla tekstów gdzie we wszystkich artykułach w danej kategorii występują podobne słowa (przypadek dla przepisow kulinarnych).
+
+Jak pokazuje zmodyfikowana przez nas miara Jaccarda, połączenie ze sobą kilku metod może przynieść poprawę wyników; do uzyskania znacznej poprawy konieczna jest jednak dogłębna znajomość dziedziny.
+
+Metoda ekstrakcji cech tekstów oparta na liczbie wystąpień słów, pomimo że wydaje się prosta, okazała się dużo bardziej skuteczna od metody gęstości informacji
+
+Zaimplementowane Metody nie sprawiają wrażenia złożonych obliczeniowo, jednak ilość danych, jaką muszą one przetworzyć jest znaczna. Implementacja metod jest bardzo dobrym polem do optymalizacji, niejednokrotnie zdarzało się nam przyspieszyć program o więcej niż 2x. Wciąż nie pozwoliło to jednak na policzenie wyników w rozsądnym czasie dla wszystkich testów \ppauza z części testów musieliśmy zrezygnować.
+}
+
+\section{Wnioski}
+{\color{blue} 
+\begin{itemize}
+ \item Zmiana metryki w metodzie $k$-NN powoduje duże zmiany skuteczności.
+ \item Nie ma metody uniwersalnej, skuteczność jest zależna od dobranych parametrów.
+ \item Do klasyfikacji przydaje się wszelka wiedza o klasyfikowanych obiektach.
+ \item Często należy ręcznie dobrać parametry metod.
+\end{itemize}
+}
+
+\begin{thebibliography}{0}
+\bibitem .A. Niewiadomski, \textsl{Methods for the Linguistic Summarization of Data: Applications of Fuzzy Stes and Their Extensions}, Akademicka Oficyna Wydawnicza EXIT , Warszawa 2008
+	
+\end{thebibliography}
+\end{document}
