@@ -14,6 +14,7 @@ ui(new Ui::MainWindow)
     ui->setupUi(this);
     on_quantTriRadioButton_toggled(false);
     on_quantTriRadioButton_toggled(true);
+    connect(this, SIGNAL(valuesToSet(QList<double>)), SLOT(setValues(QList<double>)));
 }
 
 MainWindow::~MainWindow()
@@ -130,6 +131,14 @@ void MainWindow::on_quantifierAddPushButton_clicked()
     stream << (q) << endl;
 }
 
+void MainWindow::setValues(QList<double> values)
+{
+    QList<QAbstractSpinBox *> sbList = ui->quantifierValuesGroupBox->findChildren<QAbstractSpinBox *>();
+    qDebug() << "sizes:" << sbList.size() << values.size();
+    for (int i = 0; i < values.size(); i++) {
+        sbList[i]->setProperty("value", values.at(i));
+    }
+}
 
 void MainWindow::on_quantifiersListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
@@ -137,6 +146,21 @@ void MainWindow::on_quantifiersListWidget_currentItemChanged(QListWidgetItem *cu
         ui->quantifierDeletePushButton->setEnabled(false);
     } else {
         ui->quantifierDeletePushButton->setEnabled(true);
+        QListWidgetItem *li = ui->quantifiersListWidget->item(ui->quantifiersListWidget->currentRow());
+        QVariant v = li->data(Qt::UserRole);
+        Quantifier q = v.value<Quantifier>();
+        if (q.typeName() == "TRAPEZOID") {
+            ui->quantTraRadioButton->setChecked(true);
+        } else {
+            ui->quantTriRadioButton->setChecked(true);
+        }
+        if (q.range() == Relative) {
+            ui->quantRelRadioButton->setChecked(true);
+        } else {
+            ui->quantAbsRadioButton->setChecked(true);
+        }
+        emit valuesToSet(q.values());
+        ui->quantifierNameLineEdit->setText(q.quantName());
     }
 }
 

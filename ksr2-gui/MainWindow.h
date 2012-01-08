@@ -34,10 +34,15 @@ private slots:
 
     void on_quantifierDeletePushButton_clicked();
 
+    void setValues(QList<double> values);
+
 private:
     Ui::MainWindow *ui;
     int mCount;
     FunctionType mFunctionType;
+
+signals:
+    void valuesToSet(QList<double> values);
 };
 
 #endif // MAINWINDOW_H
