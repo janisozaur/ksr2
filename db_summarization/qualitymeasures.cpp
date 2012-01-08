@@ -114,8 +114,11 @@ double QualityMeasures::computeT3(const QList<const LinguisticValue *> &qualifie
         Support support2 = Support();
         support1.setFuzzySet(&intersection);
         support2.setFuzzySet(qualifierIntersection);
-
-        return support1.cardinality(dbRows)/support2.cardinality(dbRows);
+        double support2Cardinality = support2.cardinality(dbRows);
+        if(support2Cardinality == 0){
+            return 0;
+        }
+        return support1.cardinality(dbRows)/support2Cardinality;
     }
 }
 
@@ -432,7 +435,7 @@ bool QualityMeasures::pairGreaterThan(const QPair<double, Summarization> &p1, co
 QList<QPair<double, Summarization> > QualityMeasures::computeTotalQuality(const QMap<QString, double> &weightsMap, const QList<Summarization> &summarizationList, const QList<QVector<QVariant> > &dbRows){
     QList<QPair<double, Summarization> > result = QList<QPair<double, Summarization> >();
 
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for(int i = 0; i<summarizationList.size(); i++){
         Summarization summarization = summarizationList.at(i);
         double quality = QualityMeasures::computeTotalQuality(weightsMap, summarization.getQuantifier(), summarization.getQualifiers(), summarization.getSummarizers(), dbRows);

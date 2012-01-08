@@ -92,9 +92,8 @@ int main(int argc, char *argv[])
 
     SummarizationGenerator generator = SummarizationGenerator();
     QList<Summarization> summarizationList = generator.generateAll(quantifierList, linguisticValMap);
-    QList<QPair<double, Summarization> > summarizationMeasureList= QualityMeasures::computeTotalQuality(weightsMap,summarizationList, dbRows);
-
     qDebug()<<"Liczba podsumowan: "<<summarizationList.size();
+    QList<QPair<double, Summarization> > summarizationMeasureList= QualityMeasures::computeTotalQuality(weightsMap,summarizationList, dbRows);
     qDebug()<<"Czas obliczen: "<<timer.elapsed()<<"ms";
 
     generator.saveSummarizations(summarizationMeasureList, "summarizations.txt");

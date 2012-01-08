@@ -22,26 +22,28 @@ QList<Quantifier> FileParser::parseQuantifiers(QString filePath){
     QTextStream in(&file);
     while (!in.atEnd()) {
         QString line = in.readLine();
-        QStringList stringList = line.split(":");
+        if(!line.startsWith("#")){
+            QStringList stringList = line.split(":");
 
-        Quantifier quantifier = Quantifier();
-        quantifier.setLabel(stringList.at(0));
-        if(stringList.at(1).compare("RELATIVE", Qt::CaseInsensitive) == 0){
-            quantifier.setRelative(true);
-        } else{
-            quantifier.setRelative(false);
+            Quantifier quantifier = Quantifier();
+            quantifier.setLabel(stringList.at(0));
+            if(stringList.at(1).compare("RELATIVE", Qt::CaseInsensitive) == 0){
+                quantifier.setRelative(true);
+            } else{
+                quantifier.setRelative(false);
+            }
+
+            QVariantMap variantMap = QVariantMap();
+            variantMap.insert("type", stringList.at(2));
+            QVariantList variantList = QVariantList();
+            for(int i =3; i< stringList.size(); i++){
+                variantList.append(stringList.at(i));
+            }
+            variantMap.insert("params", variantList);
+
+            quantifier.setMembershipFunction(factory.getFunction(variantMap));
+            list.append(quantifier);
         }
-
-        QVariantMap variantMap = QVariantMap();
-        variantMap.insert("type", stringList.at(2));
-        QVariantList variantList = QVariantList();
-        for(int i =3; i< stringList.size(); i++){
-            variantList.append(stringList.at(i));
-        }
-        variantMap.insert("params", variantList);
-
-        quantifier.setMembershipFunction(factory.getFunction(variantMap));
-        list.append(quantifier);
     }
 
     return list;
@@ -57,21 +59,23 @@ QMap<int, QList<const LinguisticValue *> > FileParser::parseLinguisticValues(QSt
     QTextStream in(&file);
     while (!in.atEnd()) {
         QString line = in.readLine();
-        QStringList stringList = line.split(":");
+        if(!line.startsWith("#")){
+            QStringList stringList = line.split(":");
 
-        LinguisticValue *linguisticValue = new LinguisticValue();
-        linguisticValue->setLabel(stringList.at(0));
-        linguisticValue->setColNum(stringList.at(1).toInt());
-        QVariantMap variantMap = QVariantMap();
-        variantMap.insert("type", stringList.at(2));
-        QVariantList variantList = QVariantList();
-        for(int i =3; i< stringList.size(); i++){
-            variantList.append(stringList.at(i));
+            LinguisticValue *linguisticValue = new LinguisticValue();
+            linguisticValue->setLabel(stringList.at(0));
+            linguisticValue->setColNum(stringList.at(1).toInt());
+            QVariantMap variantMap = QVariantMap();
+            variantMap.insert("type", stringList.at(2));
+            QVariantList variantList = QVariantList();
+            for(int i =3; i< stringList.size(); i++){
+                variantList.append(stringList.at(i));
+            }
+            variantMap.insert("params", variantList);
+
+            linguisticValue->setMembershipFunction(factory.getFunction(variantMap));
+            map[stringList.at(1).toInt()].append(linguisticValue);
         }
-        variantMap.insert("params", variantList);
-
-        linguisticValue->setMembershipFunction(factory.getFunction(variantMap));
-        map[stringList.at(1).toInt()].append(linguisticValue);
     }
 
     return map;
