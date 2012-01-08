@@ -435,7 +435,7 @@ bool QualityMeasures::pairGreaterThan(const QPair<double, Summarization> &p1, co
 QList<QPair<double, Summarization> > QualityMeasures::computeTotalQuality(const QMap<QString, double> &weightsMap, const QList<Summarization> &summarizationList, const QList<QVector<QVariant> > &dbRows){
     QList<QPair<double, Summarization> > result = QList<QPair<double, Summarization> >();
 
-    //#pragma omp parallel for
+    #pragma omp parallel for
     for(int i = 0; i<summarizationList.size(); i++){
         Summarization summarization = summarizationList.at(i);
         double quality = QualityMeasures::computeTotalQuality(weightsMap, summarization.getQuantifier(), summarization.getQualifiers(), summarization.getSummarizers(), dbRows);
