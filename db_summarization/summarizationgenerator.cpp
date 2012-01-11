@@ -90,7 +90,7 @@ void SummarizationGenerator::saveSummarizations(QList<QPair<double, Summarizatio
     QFile file(filePath);
     if(file.open(QIODevice::WriteOnly)){
         QTextStream out(&file);
-        //QTextCodec *codec = QTextCodec::codecForUtfText("¹æê³ñœó¿Ÿ");
+        //QTextCodec *codec = QTextCodec::codecForUtfText("Ä…Ä‡Ä™Å‚Å„Å›Ã³Å¼Åº");
         //out.setCodec(codec);
 
         QList<const LinguisticValue *> summarizers;
