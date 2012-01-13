@@ -32,7 +32,14 @@ double FuzzySetType2::membership(const QVariant &element) const
     idx = omp_get_thread_num();
 #endif
     QScriptValue func = FuzzySetEngineHelper::getFuncForThreadId(idx, mId);
-    QScriptValue result = func.call(QScriptValue(), QScriptValueList() << element.toDouble());
+    QScriptValueList params;
+    if (element.type() == QVariant::Map) {
+        const QVariantMap &m = element.toMap();
+        params << m.value("x").toDouble() << m.value("y").toDouble();
+    } else {
+        params << element.toDouble();
+    }
+    QScriptValue result = func.call(QScriptValue(), params);
     //qDebug() << func.isFunction() << func.toString();
     return result.toNumber();
 }

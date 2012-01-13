@@ -43,6 +43,7 @@ int testType2FuzzySet(QCoreApplication &a)
         return -2;
     }
     const QString source = f.readAll().trimmed();
+    f.close();
 
     int threadCount = 1;
 #ifdef _OPENMP
@@ -64,8 +65,10 @@ int testType2FuzzySet(QCoreApplication &a)
     QScriptValueList params;
     params << "trapezoid" << v;
     FuzzySetType2 fst2(params);
-    qDebug() << "type 2 membership:" << fst2.membership(QVariant(2.75));
-    f.close();
+    QVariantMap membershipParams;
+    membershipParams["x"] = 2.75;
+    membershipParams["y"] = 0.75;
+    qDebug() << "type 2 membership:" << fst2.membership(membershipParams);
     return 0;
 }
 
