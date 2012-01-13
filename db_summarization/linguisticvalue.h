@@ -19,9 +19,9 @@ public:
     const MembershipFuncInterface *getMembershipFunction() const;
     void setMembershipFunction(const MembershipFuncInterface *membershipFunction);
 
-    const QString getLabel() const;
+    QString getLabel() const;
     void setLabel(const QString label);
-    const int getColNum() const;
+    int getColNum() const;
     void setColNum(const int colNum);
 };
 

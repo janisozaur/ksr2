@@ -12,55 +12,52 @@
 
 // stopien prawdziwosci
 double QualityMeasures::computeT1(const Quantifier &quantifier, const QList<const LinguisticValue *> &qualifiers, const QList<const LinguisticValue *> &summarizers, const QList<QVector<QVariant> > &dbRows) {
-	//int dbSize = summarizers.at(0).getElements().size();
-	const FuzzySet *summarizerIntersection = summarizers.at(0);
-	const FuzzySet *qualifierIntersection;
+    //int dbSize = summarizers.at(0).getElements().size();
+    const FuzzySet *summarizerIntersection = summarizers.at(0);
+    const FuzzySet *qualifierIntersection;
     Intersection *temp;
     for(int i = 1; i<summarizers.size(); i++){
 
         temp = new Intersection();
         temp->setFuzzySet1(summarizerIntersection);
-		temp->setFuzzySet2(summarizers.at(i));
+        temp->setFuzzySet2(summarizers.at(i));
         summarizerIntersection = temp;
-    }
-    if(!qualifiers.empty()){
-		qualifierIntersection = qualifiers.at(0);
-        for(int i = 1; i<qualifiers.size(); i++){
-            temp = new Intersection();
-            temp->setFuzzySet1(qualifierIntersection);
-			temp->setFuzzySet2(qualifiers.at(i));
-            qualifierIntersection = temp;
-        }
     }
     int m=1;
     if (quantifier.isRealtive()){
         m=dbRows.size();
     }
-
-    if(qualifiers.empty()){
-        double sum = 0;
-        for(int i=0; i<dbRows.size(); i++){
-            //qDebug()<<i;
-            sum += summarizerIntersection->membership(dbRows.at(i));
+    if(!qualifiers.empty()){
+        qualifierIntersection = qualifiers.at(0);
+        for(int i = 1; i<qualifiers.size(); i++){
+            temp = new Intersection();
+            temp->setFuzzySet1(qualifierIntersection);
+            temp->setFuzzySet2(qualifiers.at(i));
+            qualifierIntersection = temp;
         }
-        return quantifier.membership(sum/m);
-    }else{
-		Intersection *intersection = new Intersection();
-		intersection->setFuzzySet1(summarizerIntersection);
-		intersection->setFuzzySet2(qualifierIntersection);
+        Intersection *intersection = new Intersection();
+        intersection->setFuzzySet1(summarizerIntersection);
+        intersection->setFuzzySet2(qualifierIntersection);
 
         double sum1=0;
         double sum2=0;
 
         for(int i=0; i<dbRows.size(); i++){
-			sum1 += intersection->membership(dbRows.at(i));
-			sum2 += qualifierIntersection->membership(dbRows.at(i));
+            sum1 += intersection->membership(dbRows.at(i));
+            sum2 += qualifierIntersection->membership(dbRows.at(i));
         }
         if(sum2 == 0){
             return quantifier.membership(0);
         } else{
             return quantifier.membership((sum1/sum2)/m);
         }
+    } else {
+        double sum = 0;
+        for(int i=0; i<dbRows.size(); i++){
+            //qDebug()<<i;
+            sum += summarizerIntersection->membership(dbRows.at(i));
+        }
+        return quantifier.membership(sum/m);
     }
 }
 
@@ -71,10 +68,10 @@ double QualityMeasures::computeT2T9(const QList<const LinguisticValue *> &fuzzyS
     }
 
     double result = 1;
-	Support support;
+    Support support;
     for(int i =0; i<fuzzySets.size(); i++){
         support.setFuzzySet(fuzzySets[i]);
-		result*=support.cardinality(dbRows)/dbRows.size();
+        result*=support.cardinality(dbRows)/dbRows.size();
     }
     result = pow(result, 1.0/fuzzySets.size());
     return 1.0 - result;
@@ -82,36 +79,29 @@ double QualityMeasures::computeT2T9(const QList<const LinguisticValue *> &fuzzyS
 
 // stopien pokrycia
 double QualityMeasures::computeT3(const QList<const LinguisticValue *> &qualifiers, const QList<const LinguisticValue *> &summarizers, const QList<QVector<QVariant> > &dbRows){
-	const FuzzySet *summarizerIntersection = summarizers.at(0);
-	const FuzzySet *qualifierIntersection;
+    const FuzzySet *summarizerIntersection = summarizers.at(0);
+    const FuzzySet *qualifierIntersection;
     Intersection *temp;
     for(int i = 1; i<summarizers.size(); i++){
         temp = new Intersection();
-		temp->setFuzzySet1(summarizerIntersection);
-		temp->setFuzzySet2(summarizers.at(i));
+        temp->setFuzzySet1(summarizerIntersection);
+        temp->setFuzzySet2(summarizers.at(i));
         summarizerIntersection = temp;
     }
-    if(!qualifiers.empty()){
-		qualifierIntersection = qualifiers.at(0);
+    if(!qualifiers.empty()) {
+        qualifierIntersection = qualifiers.at(0);
         for(int i = 1; i<qualifiers.size(); i++){
             temp = new Intersection();
             temp->setFuzzySet1(qualifierIntersection);
-			temp->setFuzzySet2(qualifiers.at(i));
+            temp->setFuzzySet2(qualifiers.at(i));
             qualifierIntersection = temp;
         }
-    }
-
-    if(qualifiers.empty()){
-        Support support = Support();
-        support.setFuzzySet(summarizerIntersection);
-        return support.cardinality(dbRows)/dbRows.size();
-    } else{
-        Intersection intersection = Intersection();
+        Intersection intersection;
         intersection.setFuzzySet1(summarizerIntersection);
         intersection.setFuzzySet2(qualifierIntersection);
 
-        Support support1 = Support();
-        Support support2 = Support();
+        Support support1;
+        Support support2;
         support1.setFuzzySet(&intersection);
         support2.setFuzzySet(qualifierIntersection);
         double support2Cardinality = support2.cardinality(dbRows);
@@ -119,13 +109,17 @@ double QualityMeasures::computeT3(const QList<const LinguisticValue *> &qualifie
             return 0;
         }
         return support1.cardinality(dbRows)/support2Cardinality;
+    } else {
+        Support support = Support();
+        support.setFuzzySet(summarizerIntersection);
+        return support.cardinality(dbRows)/dbRows.size();
     }
 }
 
 // miara trafnosci
 double QualityMeasures::computeT4(const QList<const LinguisticValue *> &qualifiers, const QList<const LinguisticValue *> &summarizers, const QList<QVector<QVariant> > &dbRows){
     if(summarizers.empty()){
-		return 1;
+        return 1;
     }
 
     double result = 1;
@@ -135,7 +129,7 @@ double QualityMeasures::computeT4(const QList<const LinguisticValue *> &qualifie
         result*=support.cardinality(dbRows)/dbRows.size();
     }
     result = result/summarizers.size();
-	return fabs(result - QualityMeasures::computeT3(qualifiers, summarizers, dbRows));
+    return fabs(result - QualityMeasures::computeT3(qualifiers, summarizers, dbRows));
 }
 
 // dlugosc podsumowania (sumaryzatora lub kwalifikatora)
@@ -148,11 +142,11 @@ double QualityMeasures::computeT5T11(const int &summarizersNum){
 
 // stopien nieprecyzyjnosci kwantyfikatora
 double QualityMeasures::computeT6(const Quantifier &quantifier, const int &dbRowsSize){
-	QList<QVariant> quantityList;
-	quantityList.reserve(dbRowsSize);
+    QList<QVariant> quantityList;
+    quantityList.reserve(dbRowsSize);
     if(quantifier.isRealtive()){
         for(int i =0; i<dbRowsSize; i++){
-			QVariant qVariant = QVariant((double)i / qreal(dbRowsSize));
+            QVariant qVariant = QVariant((double)i / qreal(dbRowsSize));
             quantityList.append(qVariant);
         }
     } else{
@@ -173,11 +167,11 @@ double QualityMeasures::computeT6(const Quantifier &quantifier, const int &dbRow
 
 // stopien kardynalnosci kwantyfikatora
 double QualityMeasures::computeT7(const Quantifier &quantifier, const int &dbRowsSize){
-	QList<QVariant> quantityList;
-	quantityList.reserve(dbRowsSize);
+    QList<QVariant> quantityList;
+    quantityList.reserve(dbRowsSize);
     if(quantifier.isRealtive()){
         for(int i =0; i<dbRowsSize; i++){
-			QVariant qVariant = QVariant((double)i / qreal(dbRowsSize));
+            QVariant qVariant = QVariant((double)i / qreal(dbRowsSize));
             quantityList.append(qVariant);
         }
     } else{
@@ -205,53 +199,53 @@ double  QualityMeasures::computeT8T10(QList<const LinguisticValue *> fuzzySets, 
 }
 
 QList<double> QualityMeasures::computeT(const QList<Measures> &measures,
-										const Quantifier &quantifier,
+                                        const Quantifier &quantifier,
                                         const QList<const LinguisticValue *> &qualifiers,
                                         const QList<const LinguisticValue *> &summarizers,
-										const QList<QVector<QVariant> > &dbRows)
+                                        const QList<QVector<QVariant> > &dbRows)
 {
-	QList<double> result;
-	result.reserve(measures.size());
-	for (int i = 0; i < measures.size(); i++) {
-		double t;
-		switch (measures.at(i)) {
-			case T1:
-				t = computeT1(quantifier, qualifiers, summarizers, dbRows);
-				break;
-			case T2:
-				t = computeT2T9(summarizers, dbRows);
-				break;
-			case T3:
-				t = computeT3(qualifiers, summarizers, dbRows);
-				break;
-			case T4:
-				t = computeT4(qualifiers, summarizers, dbRows);
-				break;
-			case T5:
-				t = computeT5T11(summarizers.size());
-				break;
-			case T6:
-				t = computeT6(quantifier, dbRows.size());
-				break;
-			case T7:
-				t = computeT7(quantifier, dbRows.size());
-				break;
-			case T8:
-				t = computeT8T10(summarizers, dbRows);
-				break;
-			case T9:
-				t = computeT2T9(qualifiers, dbRows);
-				break;
-			case T10:
-				t = computeT8T10(qualifiers, dbRows);
-				break;
-			case T11:
-				t = computeT5T11(qualifiers.size());
-				break;
-		}
-		result.append(t);
-	}
-	return result;
+    QList<double> result;
+    result.reserve(measures.size());
+    for (int i = 0; i < measures.size(); i++) {
+        double t;
+        switch (measures.at(i)) {
+            case T1:
+                t = computeT1(quantifier, qualifiers, summarizers, dbRows);
+                break;
+            case T2:
+                t = computeT2T9(summarizers, dbRows);
+                break;
+            case T3:
+                t = computeT3(qualifiers, summarizers, dbRows);
+                break;
+            case T4:
+                t = computeT4(qualifiers, summarizers, dbRows);
+                break;
+            case T5:
+                t = computeT5T11(summarizers.size());
+                break;
+            case T6:
+                t = computeT6(quantifier, dbRows.size());
+                break;
+            case T7:
+                t = computeT7(quantifier, dbRows.size());
+                break;
+            case T8:
+                t = computeT8T10(summarizers, dbRows);
+                break;
+            case T9:
+                t = computeT2T9(qualifiers, dbRows);
+                break;
+            case T10:
+                t = computeT8T10(qualifiers, dbRows);
+                break;
+            case T11:
+                t = computeT5T11(qualifiers.size());
+                break;
+        }
+        result.append(t);
+    }
+    return result;
 }
 
 // miara calkowita - srednia wazona miar

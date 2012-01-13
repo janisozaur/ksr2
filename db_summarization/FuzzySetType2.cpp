@@ -46,9 +46,5 @@ double FuzzySetType2::membership(const QVariant &element) const
 
 double FuzzySetType2::membership(const QVector<QVariant> &elements) const
 {
-    int idx = 0;
-#ifdef _OPENMP
-    idx = omp_get_thread_num();
-#endif
     return 0;
 }

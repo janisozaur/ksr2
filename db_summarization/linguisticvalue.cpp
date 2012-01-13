@@ -19,14 +19,14 @@ void LinguisticValue::setMembershipFunction(const MembershipFuncInterface *membe
     this->membershipFunction = membershipFunction;
 }
 
-const QString LinguisticValue::getLabel() const{
+QString LinguisticValue::getLabel() const{
     return label;
 }
 void LinguisticValue::setLabel(const QString label){
     this->label = label;
 }
 
-const int LinguisticValue::getColNum() const{
+int LinguisticValue::getColNum() const{
     return colNum;
 }
 void LinguisticValue::setColNum(const int colNum){

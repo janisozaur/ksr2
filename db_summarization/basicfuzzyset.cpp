@@ -10,7 +10,7 @@ double BasicFuzzySet::membership(const QVariant &element) const {
 }
 
 double BasicFuzzySet::membership(const QVector<QVariant> &elements) const {
-	return membershipFunction->value(elements.at(colNum));
+    return membershipFunction->value(elements.at(colNum));
 }
 
 const MembershipFuncInterface *BasicFuzzySet::getMembershipFunction() const {
@@ -20,7 +20,7 @@ void BasicFuzzySet::setMembershipFunction(const MembershipFuncInterface *members
     this->membershipFunction = membershipFunction;
 }
 
-const int BasicFuzzySet::getColNum() const{
+int BasicFuzzySet::getColNum() const{
     return colNum;
 }
 void BasicFuzzySet::setColNum(const int colNum){
