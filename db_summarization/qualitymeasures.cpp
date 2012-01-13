@@ -78,9 +78,10 @@ double QualityMeasures::computeT2T9(const QList<const LinguisticValue *> &fuzzyS
 }
 
 // stopien pokrycia
-double QualityMeasures::computeT3(const QList<const LinguisticValue *> &qualifiers, const QList<const LinguisticValue *> &summarizers, const QList<QVector<QVariant> > &dbRows){
+double QualityMeasures::computeT3(const QList<const LinguisticValue *> &qualifiers, const QList<const LinguisticValue *> &summarizers, const QList<QVector<QVariant> > &dbRows)
+{
     const FuzzySet *summarizerIntersection = summarizers.at(0);
-    const FuzzySet *qualifierIntersection;
+    const FuzzySet *qualifierIntersection = nullptr;
     Intersection *temp;
     for(int i = 1; i<summarizers.size(); i++){
         temp = new Intersection();
@@ -88,6 +89,7 @@ double QualityMeasures::computeT3(const QList<const LinguisticValue *> &qualifie
         temp->setFuzzySet2(summarizers.at(i));
         summarizerIntersection = temp;
     }
+    double result;
     if(!qualifiers.empty()) {
         qualifierIntersection = qualifiers.at(0);
         for(int i = 1; i<qualifiers.size(); i++){
@@ -106,14 +108,25 @@ double QualityMeasures::computeT3(const QList<const LinguisticValue *> &qualifie
         support2.setFuzzySet(qualifierIntersection);
         double support2Cardinality = support2.cardinality(dbRows);
         if(support2Cardinality == 0){
-            return 0;
+            result = 0;
+        } else {
+            result =  support1.cardinality(dbRows)/support2Cardinality;
         }
-        return support1.cardinality(dbRows)/support2Cardinality;
     } else {
-        Support support = Support();
+        Support support;
         support.setFuzzySet(summarizerIntersection);
-        return support.cardinality(dbRows)/dbRows.size();
+        result = support.cardinality(dbRows)/dbRows.size();
     }
+    const Intersection *i;
+    while ((i = dynamic_cast<const Intersection *>(summarizerIntersection)) != nullptr) {
+        summarizerIntersection = i->getFuzzySet1();
+        delete i;
+    }
+    while ((i = dynamic_cast<const Intersection *>(qualifierIntersection)) != nullptr) {
+        qualifierIntersection = i->getFuzzySet1();
+        delete i;
+    }
+    return result;
 }
 
 // miara trafnosci
