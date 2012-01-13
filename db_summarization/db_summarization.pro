@@ -62,3 +62,6 @@ HEADERS += \
     summarizationgenerator.h \
     FuzzySetType2.h \
     FuzzySetEngineHelper.h
+
+OTHER_FILES += \
+    qscripts/func.qs
