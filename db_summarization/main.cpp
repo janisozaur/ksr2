@@ -16,6 +16,7 @@
 
 #include "FuzzySetType2.h"
 #include "FuzzySetEngineHelper.h"
+#include "intersection.h"
 
 #include <QScriptValue>
 #include <QScriptEngine>
@@ -68,7 +69,24 @@ int testType2FuzzySet(QCoreApplication &a)
     QVariantMap membershipParams;
     membershipParams["x"] = 2.75;
     membershipParams["y"] = 0.75;
-    qDebug() << "type 2 membership:" << fst2.membership(membershipParams);
+    qDebug() << "fst2 membership for values" << membershipParams << ":"
+             << fst2.membership(membershipParams);
+
+    v.setProperty(1, 2);
+    membershipParams["x"] = 1;
+    membershipParams["y"] = -1;
+    params.clear();
+    params << "trapezoid" << v;
+    FuzzySetType2 fst2_2(params);
+    qDebug() << "fst2 membership for values" << membershipParams << ":"
+             << fst2.membership(membershipParams);
+    qDebug() << "fst2_2 membership for values" << membershipParams << ":"
+             << fst2_2.membership(membershipParams);
+    Intersection i;
+    i.setFuzzySet1(&fst2);
+    i.setFuzzySet2(&fst2_2);
+    qDebug() << "intersection membership for values" << membershipParams << ":"
+             << i.membership(membershipParams);
     return 0;
 }
 
