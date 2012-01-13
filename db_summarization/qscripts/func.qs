@@ -10,15 +10,20 @@
           var b = params[1];
           var c = params[2];
           var d = params[3];
+          var ret;
           if (x >= b && x <= c) {
-              return 1;
+              ret = 1;
           } else if (x > a && x < b) {
-              return 1.0 / (b - a) * x + 1.0 - (1.0 / (b - a)) * b;
+              ret = 1.0 / (b - a) * x + 1.0 - (1.0 / (b - a)) * b;
           } else if (x > c && x < d) {
-              return 1.0 / (c - d) * x + 1.0 - (1.0 / (c - d)) * c;
+              ret = 1.0 / (c - d) * x + 1.0 - (1.0 / (c - d)) * c;
           } else {
-              return 0;
+              ret = 0;
           }
+          if (y > 0) {
+              ret = ret * 0.5;
+          }
+          return ret;
       }
 
     var localParams = params.slice();
