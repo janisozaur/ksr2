@@ -13,7 +13,61 @@
 #include "fileparser.h"
 #include "summarization.h"
 #include "summarizationgenerator.h"
-#include <iostream>
+
+#include "FuzzySetType2.h"
+#include "FuzzySetEngineHelper.h"
+
+#include <QScriptValue>
+#include <QScriptEngine>
+
+#ifdef Q_CREATOR_RUN
+    #ifndef _OPENMP
+        #define _OPENMP
+    #endif
+#endif
+
+#ifdef _OPENMP
+    #include <omp.h>
+#endif
+
+int testType2FuzzySet(QCoreApplication &a)
+{
+    if (a.arguments().size() < 1) {
+        qCritical() << "too few arguments";
+        return -1;
+    }
+    const QString filename = a.arguments().at(1);
+    QFile f(filename);
+    if (!f.open(QIODevice::ReadOnly)) {
+        qCritical() << "failed to open file" << filename;
+        return -2;
+    }
+    const QString source = f.readAll().trimmed();
+
+    int threadCount = 1;
+#ifdef _OPENMP
+    #pragma omp parallel
+    {
+        #pragma omp single
+        {
+            threadCount = omp_get_num_threads();
+        }
+    }
+#endif
+
+    FuzzySetEngineHelper::init(threadCount, source);
+    QScriptValue v = FuzzySetEngineHelper::getEngine(0)->newArray(4);
+    v.setProperty(0, 0);
+    v.setProperty(1, 1);
+    v.setProperty(2, 2);
+    v.setProperty(3, 3);
+    QScriptValueList params;
+    params << "trapezoid" << v;
+    FuzzySetType2 fst2(params);
+    qDebug() << "type 2 membership:" << fst2.membership(QVariant(2.75));
+    f.close();
+    return 0;
+}
 
 int main(int argc, char *argv[])
 {
@@ -84,6 +138,12 @@ int main(int argc, char *argv[])
     weightsMap.insert("T9", 1);
     weightsMap.insert("T10", 1);
     weightsMap.insert("T11", 1);
+
+    int res = 0;
+    res = testType2FuzzySet(a);
+    if (res < 0) {
+        return res;
+    }
 
     //qDebug()<<"Total: "<<QualityMeasures::computeTotalQuality(weightsMap, quantifierList.at(0), qualifiers, summarizers, dbRows);
 
