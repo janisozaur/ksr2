@@ -11,10 +11,11 @@
 #include <QDebug>
 
 // stopien prawdziwosci
-double QualityMeasures::computeT1(const Quantifier &quantifier, const QList<const LinguisticValue *> &qualifiers, const QList<const LinguisticValue *> &summarizers, const QList<QVector<QVariant> > &dbRows) {
+double QualityMeasures::computeT1(const Quantifier &quantifier, const QList<const LinguisticValue *> &qualifiers, const QList<const LinguisticValue *> &summarizers, const QList<QVector<QVariant> > &dbRows)
+{
     //int dbSize = summarizers.at(0).getElements().size();
     const FuzzySet *summarizerIntersection = summarizers.at(0);
-    const FuzzySet *qualifierIntersection;
+    const FuzzySet *qualifierIntersection = nullptr;
     Intersection *temp;
     for(int i = 1; i<summarizers.size(); i++){
 
@@ -27,6 +28,7 @@ double QualityMeasures::computeT1(const Quantifier &quantifier, const QList<cons
     if (quantifier.isRealtive()){
         m=dbRows.size();
     }
+    double result;
     if(!qualifiers.empty()){
         qualifierIntersection = qualifiers.at(0);
         for(int i = 1; i<qualifiers.size(); i++){
@@ -46,10 +48,11 @@ double QualityMeasures::computeT1(const Quantifier &quantifier, const QList<cons
             sum1 += intersection->membership(dbRows.at(i));
             sum2 += qualifierIntersection->membership(dbRows.at(i));
         }
+        delete intersection;
         if(sum2 == 0){
-            return quantifier.membership(0);
+            result = quantifier.membership(0);
         } else{
-            return quantifier.membership((sum1/sum2)/m);
+            result = quantifier.membership((sum1/sum2)/m);
         }
     } else {
         double sum = 0;
@@ -57,8 +60,18 @@ double QualityMeasures::computeT1(const Quantifier &quantifier, const QList<cons
             //qDebug()<<i;
             sum += summarizerIntersection->membership(dbRows.at(i));
         }
-        return quantifier.membership(sum/m);
+        result = quantifier.membership(sum/m);
     }
+    const Intersection *i;
+    while ((i = dynamic_cast<const Intersection *>(summarizerIntersection)) != nullptr) {
+        summarizerIntersection = i->getFuzzySet1();
+        delete i;
+    }
+    while ((i = dynamic_cast<const Intersection *>(qualifierIntersection)) != nullptr) {
+        qualifierIntersection = i->getFuzzySet1();
+        delete i;
+    }
+    return result;
 }
 
 // stopien nieprecyzyjnosci (sumaryzatora lub kwalifikatora)
