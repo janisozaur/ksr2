@@ -369,35 +369,18 @@ Poszczególne linie plików z opisem kwantyfikatorów, kwalifikatorów i sumaryz
 Wynikiem działania aplikacji jest jeden plik wyjściowy zawierający podsumowania lingwistyczne w postaci tekstowej oraz ich miary jakości. Podsumowania są posortowane malejąco według miar jakości.
 
 \section{Materiały i metody}
-{\color{blue} 
-Badania zostały przeprowadzone na dwóch zbiorach dokumentów tekstowych:\\
-\begin{enumerate}
-\item Zbiór dokumentów Reuters dostępny pod adresem:\\ \url{http://archive.ics.uci.edu/ml/datasets/Reuters-21578+Text+Categorization+Collection}\\\\
-Dla tego zbioru testy były przeprowadzone w dwóch kategoriach:
-
-\begin{itemize}
-\item \textit{places} (etykiety: \textit{west-germany}, \textit{usa}, \textit{uk}, \textit{france}, \textit{canda}, \textit{japan}),
-\item \textit{topics} (etykiety: \textit{coffee}, \textit{gold}, \textit{ship}, \textit{sugar}).\\
-\end{itemize}
-Wykorzystane zostały tylko artykuły, które w danej kategorii posiadają dokładnie jedną z wymienionych etykiet.\\
-
-
-\item Zbiór wybranych na potrzeby tego zadania 100 krótkich opisów potraw ze strony \url{http://allrecipes.com}, z etykietami: \textit{cake} i \textit{pasta} (50 opisów dla każdej kategorii).
-
-\end{enumerate}
+Jako baza danych do podsumowania zostały wybrane dane pogodowe ze stacji meteorologicznej znajdującej się w obserwatorium astronomicznym na górze Suchora. Dane te są dostępne w internecie pod adresem:
+\url{http://www.as.up.krakow.pl/weather/text/}.
 
 \paragraph{}
-We wszystkich badaniach zbiór danych został podzielony na 60\% danych uczących i 40\% danych testowych.
-\paragraph{}
-W każdym zbiorze tekstów zostały wyodrębnione wektory cech dla poszczególnych dokumentów metodami opisanymi w rozdziale 2, a następnie dokonano klasyfikacji za pomocą algorytmu k-NN dla $k$ z zakresu 1-100. W przypadku metody ekstrakcji opartej na liczbie wystąpień słów, jako słowa kluczowe wybrano te z zakresu 90-99\% najczęściej występujących, co dawało optymalne rezultaty.
-Do badania odległości wektorów wykorzystano opisane wcześniej metryki: euklidesową, uliczną i Czebyszewa. Dla metryki euklidesowej i Czebyszewa została zastosowana normalizacja wektorów, ponieważ znacznie poprawiło to osiągane wyniki.\\
-Również dla każdego zestawu tekstów policzono wartości podobieństwa ze tekstów zbioru treningowego do tekstów ze zbioru uczącego i dokonano klasyfikacji za pomocą k-NN.
+Zbiór zawiera obecnie ponad 70 tys. pomiarów, wykonywanych od marca 2008 roku, co pół godziny. Na potrzeby zadania zostało losowo wybrane 10 tys. rekordów.
+Każdy pomiar zawiera ponad 20 parametrów, m.in: data, czas, temperatura na zewnątrz, temperatura wewnątrz stacji meteorologicznej, temperatura odczuwalna, prędkość wiatru, kierunek wiatru, wielkość opadów, wilgotność powietrza na zewnątrz, wilgotność powietrza wewnątrz stacji, ciśnienie atmosferyczne. Takie też atrybuty zostały wykorzystane w naszych podsumowaniach z tym, że z daty i czasu został wybrany tylko miesiąc.
 
-Dodatkowo w celu poprawy otrzymywanych wyników została zastosowana zmodyfikowana przez nas metoda Jaccarda do określania podobieństwa tekstów: $$sim(d_1, d_2) = \sqrt{J(A ,B)*J(C, D)}$$\\
-gdzie:\\
-$A$ i $B$ to zbiory słów w dokumentach $d_1$ i $d_2$,\\
-$C$ i $D$ to zbiory n-gramów 4-elementowych w dokumentach $d_1$ i $d_2$.
-}
+\paragraph{}
+Dla każdego z podsumowywanych atrybutów został przygotowany został opis przynajmniej 2 wartości lingwistycznych, przedstawiający wartość niską i wysoką. Ponadto został też przygotowany zbiór kwantyfikatorów względnych i bezwzględnych typu: prawie żaden z pomiarów, prawie wszystkie pomiary, około połowa, około 1000.
+
+\paragraph{}
+Kolejnym etapem badań było wygenerowane kilka zestawów podsumowań, gdzie na wejściu aplikacji zostały podane zawsze wszystkie kwantyfikatory i podzbiór 4-5 atrybutów.
 
 \section{Wyniki}
 {\color{blue} 
