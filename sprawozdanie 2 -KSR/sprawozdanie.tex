@@ -297,65 +297,77 @@ gdzie $|W|$ jest liczbą kwalifikatorów wchodzących w skład kwalifikatora zł
 Optymalną miarę podsumowania możemy policzyć jako średnią ważoną wyżej wymienionych miar. Najczęściej stosuje się równe wagi dla wszystkich miar, czyli otrzymujemy wtedy średnią arytmetyczną.
 
 \section{Opis implementacji}
-{\color{blue} 
-Aplikacja została podzielona na cztery główne moduły:
-\begin{itemize}
- \item \verb|sgmlExtractor| \ppauza prosta aplikacja służąca do ekstrakcji danych z plików formatu \verb|SGML| na prostszy w obsłudze format,
- \item \verb|keywordSelector| \ppauza aplikacja służąca do wyboru słów kluczowych dla zadanego tekstu,
- \item \verb|stemmer| \ppauza aplikacja dokonująca rdzeniowanie tekstu,
- \item \verb|classifier| \ppauza główna aplikacja zadania, która dokonuje ekstrakcji wektorów cech oraz klasyfikacji danych wejściowych.
-\end{itemize}
-Z wyjątkiem aplikacji \verb|stemmer|, wszystkie opisane powyżej aplikacje wykonane zostały przy użyciu frameworka \verb|Qt|, w języku \verb|C++|.
+Aplikacja została napisana w języku C++ z użyciem frameworka Qt.\\
+Składa się z dwóch głównych modułów. Pierwszy z nich stanowi implementację biblioteki klas reprezentujących zbiory rozmyte i operacje na nich oraz lingwistyczne podsumowania baz danych. Drugi moduł jest prostym graficznym interfejsem użytkownika, ale aplikację można również uruchamiać w trybie konsolowym.
+\paragraph{}
+\subsection{Najważniejsze klasy aplikacji}
+Poniżej znajduje się opis najważniejszych klas stworzonych na potrzeby tego zadania:
+\begin{enumerate}
+\item \textbf{Funkcje przynależności}\\
+Klasy te reprezentują funkcje charakterystyczne zbiorów i dziedziczą wspólny interfejs \verb|MembershipFunctionInterface|. Zostały zaimplementowane następujące typy funkcji przynależności:
+\begin{enumerate}
+\item \verb|TriangleFunction| - funkcja trójkątna,
+\item \verb|TrapezoidFunction| - funkcja trapezoidalna, umożliwiające też reprezentowanie też funkcji prostokątnej, a co za tym idzie zbiorów klasycznych (nierozmytych),
+\item \verb|DiscreteFunction| - funkcja przynależności przeznaczona do reprezentacji wartości dyskretnych, gdzie dla każdego elementu dziedziny należy jawnie podać jego stopień przynależności.
+\end{enumerate}
 
-Wyekstrahowane wektory cech są zapisywany oraz później odczytywane z pliku o następującym formacie:
-\begin{verbatim}
- etykieta1
- [x1_1;x1_2;...;x1_n]  //wektor cech
- etykieta2
- [x2_1;x2_2;...;x2_n]
- ...
-\end{verbatim}
-W ten sposób została uzyskana niezależność klasyfikacji od rodzaju danych wejściowych.
+\item \textbf{Zbiory rozmyte i operacje na zbiorach rozmytych.}\\
+Wszystkie poniższe klasy dziedziczą po klasie abstrakcyjnej \verb|FuzzySet| reprezentującej zbiór rozmyty i metody do pobierania stopnia przynależności elementu do zbioru i liczby kardynalnej zbioru:
+\begin{enumerate}
+\item \verb|BasicFuzzySet| - podstawowa klasa zbioru rozmytego typu 1,
+\item \verb|FuzzySetType2| - zbiór rozmyty typu 2,
+\item \verb|Union|, \verb|Intersection|, \verb|Complement| - odpowiednio: suma, iloczyn i dopełnienie zbioru rozmytego,
+\item \verb|Support|, \verb|AlphaCut| - odpowiednio: nośnik i alfa-przekrój zbioru rozmytego.
+\end{enumerate}
+\item \textbf{Podsumowania lingwistyczne.}
+\begin{enumerate}
+\item \verb|LingusisticValue| - wartość zmiennej lingwistycznej - reprezentuje zbiór rozmyty opisujący zmienną lingwistyczną, nazwę zmiennej lingwistycznej i numer kolumny bazy danych, do której się odnosi. Klasa ta reprezentuje w aplikacji kwalifikatory i sumaryzatory.
+\item \verb|Quantifier| - kwantyfikator rozszerzający klasę \verb|LingusisticValue|
+\item \verb|Summarization| - klasa reprezentująca pojedyncze podsumowania lingwistyczne, zawierająca kwantyfikator, listę sumaryzatorów i listę kwalifikatorów,
+\item \verb|SummarizationGenerator| - generator wszystkich możliwych podsumowań (w postaci obiektów \verb|Summarization|) z podanych kwantyfikatorów, klasyfikatorów i sumaryzatorów. Umożliwia zapis podsumowań do pliku.
+\item \verb|QualityMeasures| - klasa zawierająca metody służące do liczenia miar jakości podsumowań.
+\end{enumerate}
 
+\item \textbf{Klasy narzędziowe.}
+\begin{enumerate}
+\item \verb|FileParser| - służy do wczytywania następujących danych z plików tekstowych: baza danych, lista kwantyfikatorów oraz lista kwalifikatorów i sumaryzatorów. 
+\end{enumerate}
 
-\subsection{sgmlExtractor}
-Aplikacja ta przekształca dane z pliku o strukturze \verb|SGML| do pliku o następującym formacie:
-\begin{verbatim}
- etykieta1
- tekst1
- etykieta2
- tekst2
- ...
-\end{verbatim}
-Pozwala to na szybkie wczytanie danych, a także na ich łatwą interpretację przez człowieka \ppauza dane można edytować bez większych obaw o ,,zepsucie'' formatu pliku.
+\end{enumerate}
 
-Aplikacja ta zawiera klasę \verb|SgmlReader|, która w metodzie \verb|readDirectory| przeszukuje żądany katalog w poszukiwaniu plików w formacie \verb|SGML|, a jeśli takie występują, to sprawdza zawarte w nich informacje pod kątem ustawionych wcześniej cech.
+\subsection{Pliki wejściowe i wyjściowe}
+Aplikacja korzysta z kilku plików wejściowych:
+\begin{enumerate}
+\item \verb|database.dat| - plik zawierający bazę danych do podsumowania. Pojedynczy wiersz reprezentuje jeden obiekt, którego atrybuty są oddzielone znakiem tabulacji.
+\item \verb|data_description.txt| - opis poszczególnych kolumn bazy danych. Kolejne wiersze pliku odpowiadają kolejnym kolumnom bazy danych i mają następujący format:\\
+\verb|typ_danych:nazwa_kolumy|\\
+gdzie rozróżniane są 2 typy danych: N - wartość liczbowa, T - wartość tekstowa.
+\item \verb|fuzzy_sets_lingvalues.txt| - zawiera opis wartości lingwistycznych, które mogą być kwalifikatorami i sumaryzatorami. Pojedynczy wiersz reprezentują jedną wartość lingwistyczną i ma następujący format:\\
+\verb|etykieta:numer_kolumny:typ_funkcji_przynależności:parametry_funkcji|
+gdzie mogą występować nastepujące typy funkcji przynależności: \verb|Triangle| - funkcja trójkątna, \verb|TRAPEZOID| - trapezoidalna, \verb|DISCRETE| - dyskretna, 
+a parametry funkcji przynależności zależą od jej typu:
+\begin{enumerate}
+\item dla funkcji trójkątnej: \verb|a:b:c|, gdzie: a - wartość atrybutu dla początku podstawy trójkąta, b - wierzchołek trójkąta, c - koniec podstawy
+\item dla funkcji trójkątnej: \verb|a:b:c:d|, gdzie a - początek dolnej podstawy, b - początek górnej podstawy, c - koniec górnej podstawy, d - koniec dolnej podstawy. Kiedy a=b i c=d, otrzymujemy funkcję prostokątną.
+\item dla funkcji dyskretnej: ciąg par \verb|wartość_atrybutu:stopień_przynależności|
+\end{enumerate}
 
-Zapis do nowego formatu wykonuje klasa \verb|ArticleWriter|.
+\paragraph{}
+Przykłady opisu wartości lingwistycznych:\\
+\verb|wysoka temperatura na zewnątrz:4:TRAPEZOID:15:25:40:40|\\
+\verb|północny kierunek wiatru:10:DISCRETE:N:1:NNE:0.75:NNW:0.75:NE:0.5:NW:0.5|\\
 
-\subsection{keywordSelector}
-Aplikacja implementuje dwie metody wyboru słów kluczowych: \textit{gęstości informacji} oraz \textit{mutual information}, implementowane odpowiednio przez klasy   \verb|DiscriminatingExtractor| oraz \verb|MIExtractor|.
+\item \verb|fuzzy_sets_quantifiers.txt| - zawiera opis kwantyfikatorów używanych do podsumowań. Format pliku jest podobny do opisu wartości lingwistycznych, ale zamiast numeru kolumny, występuje tutaj typ kwantyfikatora:\\
+\verb|etykieta:typ_kwantyfikatora:typ_funkcji_przynależności:parametry_funkcji|\\
+gdzie typ kwantyfikatora może przyjmować dwie wartości: \verb|RELATIVE| - względny, \verb|ABSOLUTE| - bezwzględny. 
+\end{enumerate}
 
-Obie metody odziedziczają interfejs \verb|KeywordExtractorInterface|, dzięki czemu możliwy jest dogodny wybór sposobu ekstrakcji słów kluczowych.
+\paragraph{}
+Poszczególne linie plików z opisem kwantyfikatorów, kwalifikatorów i sumaryzatorów można tymczasowo ukryć dla aplikacji, za pomocą znaku komentarza \verb|#| na początku linii.
 
-\subsection{stemmer}
-Aplikacja została napisana w języku Java i wykorzystuje bibliotekę JWNL do połączenie ze słownikiem WordNet. Obsługa WordNeta jest realizowana w klasie \verb|WordNetStemmer|
- 
-WordNet jest słownikiem zawierającym bazę słów w języku angielskim razem z relacjami semantycznymi i leksykalnymi pomiędzy nimi. Umożliwia on m.in. rdzeniowanie (ang. \textit{stemming}) wyrazów, czyli otrzymanie formy podstawowej słowa. Dzięki zamianie wyrazów na ich formy podstawowe, odmiany tego samego słowa nie są rozróżniane, co ułatwia klasyfikację.
+\paragraph{}
+Wynikiem działania aplikacji jest jeden plik wyjściowy zawierający podsumowania lingwistyczne w postaci tekstowej oraz ich miary jakości. Podsumowania są posortowane malejąco według miar jakości.
 
-\subsection{classifier}
-Aplikacja ta może działać w trzech trybach: klasyfikowania za pomocą metody $k$-NN, badania podobieństwa tekstów oraz ekstrakcji cech.
-
-\subsubsection{Metoda $k$-NN}
-\label{sec:impl_knn}
-W trybie tym, zaraz po utworzeniu strumienia wyjściowego, sterowanie przekazywane jest do klasy \verb|Knn|, która inicjuje wybraną metrykę korzystając z fabryki \verb|MetricFactory|, a następnie za jej pomocą ładuje dane (które mogą być specyficzne dla żądanej metryki), po czym tworzy wątki \verb|KnnThread|, które dokonują obliczeń i wyznaczają odległości pomiędzy poszczególnymi obiektami zbiorów testowego i treningowego. Klasa \verb|Knn| konsoliduje wyniki i zapisuje je.
-
-\subsubsection{Badanie podobieństwa tekstów}
-Po wczytaniu artykułów za pomocą klasy \verb|ArticleLoader| następuje wyznaczenie wymaganych zbiorów słów, po czym podobnie jak w sekcji \ref{sec:impl_knn} sterowanie przekazywane jest do klasy \verb|Knn| z tą różnicą, że praca w tym przypadku wykonywana jest przez wątki klasy \verb|KnnSimiliarityThread|.
-
-\subsubsection{Ekstrakcja cech}
-Po wczytaniu artykułów za pomocą klasy \verb|ArticleLoader| wybierane są słowa, względem których liczone mają być wagi. Po zainicjowaniu wszystkich potrzebnych danych klasa \verb|Tfidf| wykonuje algorytm o tej samej nazwie.
-}
 \section{Materiały i metody}
 {\color{blue} 
 Badania zostały przeprowadzone na dwóch zbiorach dokumentów tekstowych:\\
