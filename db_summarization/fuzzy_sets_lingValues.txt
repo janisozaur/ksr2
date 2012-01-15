@@ -1,13 +1,13 @@
-niskie opady:19:TRAPEZOID:0:0:20:50
-#średnie opady:19:TRIANGLE:20:200:400
+﻿niskie opady:19:TRAPEZOID:0:0:20:50
+średnie opady:19:TRIANGLE:20:200:400
 wysokie opady:19:TRAPEZOID:200:400:600:600
 
 niska temperatura na zewnątrz:4:TRAPEZOID:-30:-30:0:10
-#średnia temperatura na zewnątrz:4:TRIANGLE:5:15:25
+średnia temperatura na zewnątrz:4:TRIANGLE:5:15:25
 wysoka temperatura na zewnątrz:4:TRAPEZOID:15:25:40:40
 
-#niska temperatura odczuwalna:14:TRAPEZOID:-30:-30:0:10
-#wysoka temperatura zewnątrz:14:TRAPEZOID:15:25:40:40
+niska temperatura odczuwalna:14:TRAPEZOID:-30:-30:0:10
+wysoka temperatura odczuwalna:14:TRAPEZOID:15:25:40:40
 
 zachodni kierunek wiatru:10:DISCRETE:W:1:WNW:0.75:WSW:0.75:NW:0.5:SW:0.5:SSE:0.25:SSW:0.25
 wschodni kierunek wiatru:10:DISCRETE:E:1:ENE:0.75:ESE:0.75:NE:0.5:SE:0.5:NNE:0.25:SSE:0.25
@@ -18,7 +18,7 @@ mała prędkość wiatru:9:TRIANGLE:0:0:15
 duża prędkość wiatru:9:TRAPEZOID:10:20:60:60
 
 niska temperatura wewnątrz:22:TRAPEZOID:0:0:5:20
-#średnia temperatura wewnątrz:22:TRIANGLE:10:20:25
+średnia temperatura wewnątrz:22:TRIANGLE:10:20:25
 wysoka temperatura wewnątrz:22:TRAPEZOID:20:30:50:50
 
 niskie ciśnienie:17:TRAPEZOID:970:970:980:1010
