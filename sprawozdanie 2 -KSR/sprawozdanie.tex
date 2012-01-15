@@ -60,7 +60,7 @@ Zbiór rozmyty typu 2 jest zdefiniowany następująco:
 gdzie $\mu_{\tilde{A}}:X \rightarrow F[0,1] $ i $F[0,1]$ jest zbiorem wszystkich zbiorów rozmytych typu 1.
 
 \subsection{Normy trójkątne}
-Normy trójkątne są uogólnieniem operacji mnożenia i iloczynu zbirów rozmytych. Wyróżniamy 2 rodzaje norm trójkątnych:
+Normy trójkątne są uogólnieniem operacji mnożenia i iloczynu zbiorów rozmytych. Wyróżniamy 2 rodzaje norm trójkątnych:
 
 \begin{enumerate}
 \item t-norma - funkcja 2 zmiennych jest t-normą jeżeli jest:
@@ -75,24 +75,24 @@ Normy trójkątne są uogólnieniem operacji mnożenia i iloczynu zbirów rozmyt
 \item przemienna,
 \item łączna,
 \item monotoniczna,
-\item istnieje element neutralny 1;
+\item istnieje element neutralny 0;
 \end{itemize}
 \end{enumerate}
 
 \subsection{Podstawowe operacje na zbiorach rozmytych}
-Dopełnieniem $A^C$ zbioru rozmytego $A$ nazywamy zbiór rozmyty o funkcji przynależności:
+\textit{Dopełnieniem} $A^C$ zbioru rozmytego $A$ nazywamy zbiór rozmyty o funkcji przynależności:
 \begin{equation}
 \mu_{A^C}(x)=1-\mu_A(x)
 \end{equation}
 
-Sumą zbiorów $A \cup B$ rozmytych nazywamy zbiór rozmyty o funkcji przynależności:
+\textit{Sumą} zbiorów $A \cup B$ rozmytych nazywamy zbiór rozmyty o funkcji przynależności:
 \begin{equation}
 \mu_{A \cup B}(x)=\mu_A(x)s\mu_A(x)
 \end{equation}
 gdzie $s$ jest dowolną s-normą np. operacją maksimum.
 \\
 
-Iloczynem zbiorów $A \cap B$ rozmytych nazywamy zbiór rozmyty o funkcji przynależności:
+\textit{Iloczynem} zbiorów $A \cap B$ rozmytych nazywamy zbiór rozmyty o funkcji przynależności:
 \begin{equation}
 \mu_{A \cap B}(x)=\mu_A(x)t\mu_A(x)
 \end{equation}
@@ -106,19 +106,19 @@ Dopełnieniem $\tilde{A}^C$ zbioru rozmytego typu 2 $\tilde{A}$ nazywamy zbiór 
 gdzie $\mu_{\tilde{A}^C}$ jest pierwszorzędnym stopniem przynależności elementu $x$ do zbioru $\tilde{A}$, a $\mu_x(\mu_{\tilde{A}})$ jest drugorzędnym stopniem przynależności.
 \\
 
-Suma $\tilde{A} \cup \tilde{B}$ zbiorów rozmytych typu 2 jest zdefiniowana w warunkach operacji złączenia i jest opisana funkcją przynależności:
+Suma $\tilde{A} \cup \tilde{B}$ zbiorów rozmytych typu 2 jest zdefiniowana poprzez operację złączenia (ang. \textit{join}) i jest opisana funkcją przynależności:
 \begin{equation}
 \mu_{\tilde{A} \cup \tilde{B}}(x) = \mu_{\tilde{A}} \sqcup \mu_{\tilde{A}} = \int_{\mu_{\tilde{A}}}\int_{\mu_{\tilde{B}}}(\mu_x(\mu_{\tilde{A}}) t_1 \mu_x(\mu_{\tilde{B}}))/(\mu_{\tilde{A}} s \mu_{\tilde{B}})
 \end{equation}
-a iloczyn $\tilde{A} \cap \tilde{B}$ jest zdefiniowany w warunkach operacji spotkania i opisany funkcją przynależności:
+a iloczyn $\tilde{A} \cap \tilde{B}$ jest zdefiniowany poprzez operację \textit{meet} i opisany funkcją przynależności:
 \begin{equation}
 \mu_{\tilde{A} \cap \tilde{B}}(x) = \mu_{\tilde{A}} \sqcap \mu_{\tilde{A}} = \int_{\mu_{\tilde{A}}}\int_{\mu_{\tilde{B}}}(\mu_x(\mu_{\tilde{A}}) t_1 \mu_x(\mu_{\tilde{B}}))/(\mu_{\tilde{A}} t_2 \mu_{\tilde{B}})
 \end{equation}
 gdzie $s$ jest dowolną s-normą, a $t_1$ i $t_2$ są dowolnymi t-normami
 
 \subsection{Miary zbiorów rozmytych}
-\subsubsection{Kardynalność}
-Kardynalność jest podstawową miarą zbiorów rozmytych.
+\subsubsection{Liczba kardynalna}
+Liczba kardynalna jest podstawową miarą zbiorów rozmytych.
 
 Dla policzalnego zbioru rozmytego A jest to suma stopni przynależności wszystkich elementów z przestrzeni rozważań:
 \begin{equation}
@@ -131,7 +131,7 @@ Dla zbioru niepoliczalnego jest to całka:
 \end{equation}
 \\
 
-W przypadku zbiorów rozmytych typu 2 wzory na kardynalności przedstawiają się następująco:
+W przypadku zbiorów rozmytych typu 2 wzory na kardynalności są następujące:
 \\
 dla zbioru policzalnego:
 \begin{equation}
@@ -143,7 +143,7 @@ i niepoliczalnego:
 \end{equation}
 
 \subsubsection{Nośnik}
-Nośnikiem $supp(A)$ zbioru rozmytego A jest zbiór klasyczny zawierający  
+Nośnikiem $supp(A)$ zbioru rozmytego A jest zbiór klasyczny zawierający wszystkie elementy, które należą do zbioru rozmytego w stopniu większym od zera.  
 \\
 
 Dla zbioru rozmytego typu 2 nośnikiem jest zbiór rozmyty typu 1, który zawiera elementy z przestrzeni rozważań $X$ z przypisanymi pierwszorzędnymi funkcjami przynależności, dla których drugorzędne funkcje przynależności są największe.
@@ -186,7 +186,7 @@ Podsumowania lingwistyczne pozwalają wygenerować za pomocą komputera opis zaw
 \subsection{Miary jakości podsumowań lingwistycznych}
 Miary jakości pozwalają z wszystkich wygenerowanych podsumowań wybrać te, które najlepiej opisują dane zawarte w bazie.
 
-Można wyróżnić między innymi miary opisane poniżej.
+Najpopularniejsze miary zostały opisane poniżej.
 \subsubsection{Stopień prawdziwości}
 W przypadku kwantyfikatora względnego:
 \begin{equation}
@@ -384,7 +384,7 @@ Kolejnym etapem badań było wygenerowane kilka zestawów podsumowań, gdzie na 
 Do podsumowań wykorzystano kilka par atrybutów i dla każdej z nich wykonano 2 pomiary - tylko dla miar podstawowych, czyli T1-T5 oraz dla wszystkich miar, czyli T1-T11. Dla każdego badania przedstawiono 10 najlepszych wyników.
 
 \section{Wyniki}
-Poniższe znajdują się otrzymane podczas badań wyniki:
+Poniżej znajdują się otrzymane podczas badań wyniki - w postaci wygenerowanej przez aplikację, bez korekty gramatycznej:
 
 \subsection{Atrybuty: kierunek wiatru, temperatura na zewnątrz - miary T1-T5}
 
