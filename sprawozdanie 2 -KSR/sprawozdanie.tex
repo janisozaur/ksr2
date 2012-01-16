@@ -348,7 +348,7 @@ gdzie mogą występować nastepujące typy funkcji przynależności: \verb|Trian
 a parametry funkcji przynależności zależą od jej typu:
 \begin{enumerate}
 \item dla funkcji trójkątnej: \verb|a:b:c|, gdzie: a - wartość atrybutu dla początku podstawy trójkąta, b - wierzchołek trójkąta, c - koniec podstawy
-\item dla funkcji trójkątnej: \verb|a:b:c:d|, gdzie a - początek dolnej podstawy, b - początek górnej podstawy, c - koniec górnej podstawy, d - koniec dolnej podstawy. Kiedy a=b i c=d, otrzymujemy funkcję prostokątną.
+\item dla funkcji trapezoidalnej: \verb|a:b:c:d|, gdzie a - początek dolnej podstawy, b - początek górnej podstawy, c - koniec górnej podstawy, d - koniec dolnej podstawy. Kiedy a=b i c=d, otrzymujemy funkcję prostokątną.
 \item dla funkcji dyskretnej: ciąg par \verb|wartość_atrybutu:stopień_przynależności|
 \end{enumerate}
 
@@ -365,12 +365,18 @@ gdzie typ kwantyfikatora może przyjmować dwie wartości: \verb|RELATIVE| - wzg
 \paragraph{}
 Poszczególne linie plików z opisem kwantyfikatorów, kwalifikatorów i sumaryzatorów można tymczasowo ukryć dla aplikacji, za pomocą znaku komentarza \verb|#| na początku linii.
 
+Dodatkowo, do zbiorów rozmytych typu 2 wymagany jest dodatkowy plik z danymi, który określa funkcje przynależności drugiego stopnia. Plik ten, napisany w języku \verb|QtScript|\footnote{Jest to język oparty o \texttt{ECMAScript}, o ten sam standard opiera się język \texttt{JavaScript}.} zawiera tylko jedną funkcję, \verb|fConstructor|, która w wyniku działania zwraca funkcję, która posłuży jako drugorzędna funkcja przynależności.
+
+Funkcja \verb|fConstructor| przyjmuje jako parametry identyfikator funkcji do stworzenia oraz jej wymagane parametry. Otrzymany w wyniku obiekt jest funkcją dwóch argumentów, \textit{x} oraz \textit{y}, pierwszy z nich to wartość pierwszorzędnej funkcji przynależności, natomiast drugi to element dla którego wyznaczane są wartości.
+
+Istnieje przykładowa funkcja trapezoidalna określona za pomocą czterech parametrów: $a$, $b$, $c$ i $d$, opisanych powyżej. Implementacja znajduje się w pliku \verb|func.qs|
+
 \paragraph{}
 Wynikiem działania aplikacji jest jeden plik wyjściowy zawierający podsumowania lingwistyczne w postaci tekstowej oraz ich miary jakości. Podsumowania są posortowane malejąco według miar jakości.
 
 \section{Materiały i metody}
 Jako baza danych do podsumowania zostały wybrane dane pogodowe ze stacji meteorologicznej znajdującej się w obserwatorium astronomicznym na górze Suchora. Dane te są dostępne w internecie pod adresem:
-\url{http:\\www.as.up.krakow.pl/weather/text/}.
+\url{http://www.as.up.krakow.pl/weather/text/}.
 
 \paragraph{}
 Zbiór zawiera obecnie ponad 70 tys. pomiarów, wykonywanych od marca 2008 roku, co pół godziny. Na potrzeby zadania zostało losowo wybrane 10 tys. rekordów.
