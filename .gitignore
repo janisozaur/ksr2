@@ -2,9 +2,10 @@
 *~
 *.swp
 *.o
-
+*.autosave
 /sprawozdanie 2 -KSR/sprawozdanie.synctex.gz
 /sprawozdanie 2 -KSR/sprawozdanie.aux
 /sprawozdanie 2 -KSR/sprawozdanie.log
 /sprawozdanie 2 -KSR/sprawozdanie.out
 /sprawozdanie 2 -KSR/sprawozdanie.pdf
+/sprawozdanie 2 -KSR/sprawozdanie.tex.backup
