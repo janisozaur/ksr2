@@ -14,6 +14,7 @@ public:
     QList<Quantifier> parseQuantifiers(QString filePath);
     QMap<int, QList<const LinguisticValue *> > parseLinguisticValues(QString filePath);
     QList<QVector<QVariant> > parseDataBase(QString dataFilePath, QString dataDescFilePath);
+    QMap<QString, double> parseWeights(QString filePath);
 };
 
 #endif // FILEPARSER_H

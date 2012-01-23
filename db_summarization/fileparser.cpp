@@ -136,3 +136,20 @@ QList<QVector<QVariant> > FileParser::parseDataBase(QString dataFilePath, QStrin
 
     return dbRows;
 }
+
+QMap<QString, double> FileParser::parseWeights(QString filePath){
+    QMap<QString, double> weightsMap = QMap<QString, double>();
+
+    QFile file(filePath);
+    file.open(QIODevice::ReadOnly);
+    QTextStream in(&file);
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        if(!line.isEmpty() && !line.startsWith("#")){
+            QStringList stringList = line.split("=");
+            weightsMap.insert(stringList.at(0), stringList.at(1).toDouble());
+        }
+    }
+
+    return weightsMap;
+}

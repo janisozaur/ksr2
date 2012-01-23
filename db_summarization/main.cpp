@@ -115,32 +115,7 @@ int main(int argc, char *argv[])
     qDebug()<<"Liczba zmiennych lingwistycznych: "<< linguisticValMap.size();
     qDebug()<<"Liczba wartosci lingwistycznych: "<< valuesCount;
 
-    QMap<QString, double> weightsMap = QMap<QString, double>();
-    weightsMap.insert("T1", 1);
-    weightsMap.insert("T2", 1);
-    weightsMap.insert("T3", 1);
-    weightsMap.insert("T4", 1);
-    weightsMap.insert("T5", 1);
-    weightsMap.insert("T6", 1);
-    weightsMap.insert("T7", 1);
-    weightsMap.insert("T8", 1);
-    weightsMap.insert("T9", 1);
-    weightsMap.insert("T10", 1);
-    weightsMap.insert("T11", 1);
-
-//    QMap<QString, double> weightsMap = QMap<QString, double>();
-//    weightsMap.insert("T1", 1);
-//    weightsMap.insert("T2", 1);
-//    weightsMap.insert("T3", 1);
-//    weightsMap.insert("T4", 1);
-//    weightsMap.insert("T5", 1);
-//    weightsMap.insert("T6", 0);
-//    weightsMap.insert("T7", 0);
-//    weightsMap.insert("T8", 0);
-//    weightsMap.insert("T9", 0);
-//    weightsMap.insert("T10", 0);
-//    weightsMap.insert("T11", 0);
-
+    QMap<QString, double> weightsMap = parser.parseWeights("weights.txt");
 
     int res = 0;
         //res = testType2FuzzySet(a);
